@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -31,7 +32,8 @@ public class tarouket {
         
         do {
             distributionCartes(p1, p2, cartes);
-            term(p1.toString());
+            term2("Mise du Croupier : " + p2.getMise().mise.toString());
+            term2(p1.toString());
             
             tarouket.petiteBlinde(p1, p2);
 
@@ -40,7 +42,8 @@ public class tarouket {
             Scanner sc = new Scanner(System.in);
             String choix;
             do { 
-                term("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
+                term2("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
+                System.out.print("Vous : ");
                 choix = sc.nextLine();
             } while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3"));
 
@@ -54,6 +57,7 @@ public class tarouket {
 
                     tarouket.allerDeLavant(p1, p2);
 
+                    // TODO
                     // mettre cette méthode dans un do while :
                     // le joueur doit pouvoir faire tapis ou miser plusieurs atouts
 
@@ -61,27 +65,8 @@ public class tarouket {
 
 
                 case "3" -> { // Player 1 se couche
-                    Random rand3 = new Random();
-                    int rez3 = rand3.nextInt(6)+1;
-                    switch(rez3) {
-                        case 1 -> term("Eh ben mon coco ! T'es pas un aventurier toi ... ");
-                        case 2 -> term("Ah ouais ?! Pas très courageux.");
-                        case 3 -> term("Tu l'as joues sur le long terme. Tu as raison !");
-                        case 4 -> term("Faudrait peut-être jouer un jour, nan ?");
-                        case 5 -> term("On se demande qui va gagner");
-                        case 6 -> term("Chacun sa technique");
-                    }
-                    term("Croupier : C'est la fin du tour ! Je redistribue les cartes.");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) { }
-                    tarouket.clearScreen();
-                    term("Nouvelle manche ! ");
-                } 
-                    // prendre les atouts du pot et les donner à p2
-                    // remettre les cartes des joueurs dans le deck
-
-
+                    tarouket.seCoucher(p1, p2, cartes);
+                }
             }
         //} while (false);
         } while (finDePartie(p1, p2));
@@ -96,7 +81,7 @@ public class tarouket {
         Scanner sc = new Scanner(System.in);
         String choix;
         do {
-            term("Croupier : Hello Moussaillon ! Tu es le joueur 1. Tu dis Pile ou Face ? ");
+            term2("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ");
             choix = sc.nextLine();
         } while (!choix.equalsIgnoreCase("Pile") && !choix.equalsIgnoreCase("Face"));
         choix = choix.toUpperCase();
@@ -128,7 +113,7 @@ public class tarouket {
     }
     
     // Affichage dans le terminal
-    public static void term(String phrase) {
+    public static void term2(String phrase) {
         for(int i = 0; i<phrase.length(); i++) {
             System.out.print(phrase.charAt(i));
             try {
@@ -138,6 +123,19 @@ public class tarouket {
             }
         }
         System.out.println("\n");
+    }
+
+    // Afichage sans \n
+    public static void term(String phrase) {
+        for(int i = 0; i<phrase.length(); i++) {
+            System.out.print(phrase.charAt(i));
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                
+            }
+        }
+        System.out.println("");
     }
 
     // Définition d'une fin de partie
@@ -150,9 +148,10 @@ public class tarouket {
     public static void petiteBlinde(Player p1, Player p2) {
             
         Scanner sc = new Scanner(System.in);
-        String choix;
+        String choix = "";
         do {
-            term("Vous devez miser la petite blinde. Tu vas miser oui ou non ? ");
+            if(choix.equals("non"))term2("\nCroupier : Nan mais t'as pas le choix en fait ... ");
+            term2("Croupier : Vous devez miser la petite blinde. Tu vas miser oui ou non ? ");
             System.out.print("Vous : ");
             choix = sc.nextLine();
         } while (!choix.equalsIgnoreCase("oui"));
@@ -164,7 +163,7 @@ public class tarouket {
             
             tarouket.afficherPots(p1, p2);
 
-            term(p1.toString());
+            term2(p1.toString());
     }
 
     public static void clearScreen() {
@@ -172,11 +171,10 @@ public class tarouket {
     }
 
     public static void afficherPots(Player p1, Player p2) {
-        term(p1.potToString());
-        term("Total : " + p1.totalDuPot());
-        System.out.println("\n");
-        term(p2.potToString());
-        term("Total : " + p2.totalDuPot());
+        term(p1.votrePotToToString());
+        term2("Total : " + p1.totalDuPot());
+        term(p2.croupierPotToToString());
+        term2("Total : " + p2.totalDuPot());
     }
 
     public static void allerDeLavant(Player p1, Player p2) {
@@ -194,15 +192,15 @@ public class tarouket {
         int valeur = -1;
         int counter = 0;
         do {
-            if(counter > 2) {
-                term("\nCroupier : Capitaine, zêtes bourré ou quoi ?! Faut miser les cartes dans ta Mise. Allez on recommence ! ");
+            if(counter > 1) {
+                term2("\nCroupier : Capitaine, zêtes bourré ou quoi ?! Faut miser les cartes dans ta Mise. Allez on recommence ! ");
             }
-            term("\nTu veux relancer de combien mon coco ? Moi, j'ai pas besoin de te suivre.");
+            term2("\nCroupier : Tu veux relancer de combien mon coco ? Moi, j'ai pas besoin de te suivre.");
             choix2 = sc2.nextLine();
             try {
                 valeur = Integer.parseInt(choix2); // user donne la valeur qu'il veut mettre dans son pot
             } catch (NumberFormatException e) {
-                term("Oh nan mais Capitaine ! Je veux un chiffre, pas des lettres !");
+                term("\nCroupier : Oh nan mais Capitaine ! Je veux un chiffre, pas des lettres !");
             }
             miseDeP1 = p1.getMise().mise; // List de ce que P1 peut miser
             counter ++;
@@ -210,10 +208,52 @@ public class tarouket {
 
         // mettre dans le pot de p1 valeur
         tarouket.clearScreen();
-        term("Croupier : tu as misé " + valeur + "!");
+        term2("Croupier : tu as misé " + valeur + "!");
         p1.ajouterAuPot(valeur);
         tarouket.afficherPots(p1, p2);
-        term(p1.toString());
+        term2(p1.toString());
+    }
+
+    public static void seCoucher(Player p1, Player p2, ArrayList<Card> cartes ) {
+        Random rand3 = new Random();
+        int rez3 = rand3.nextInt(6)+1;
+        switch(rez3) {
+            case 1 -> term2("Croupier : Eh ben mon coco ! T'es pas un aventurier toi ... ");
+            case 2 -> term2("Croupier : Ah ouais ?! Pas très courageux.");
+            case 3 -> term2("Croupier : Tu l'as joues sur le long terme. Tu as raison !");
+            case 4 -> term2("Croupier : Faudrait peut-être jouer un jour, nan ?");
+            case 5 -> term2("Croupier : On se demande bien qui va gagner");
+            case 6 -> term2("Croupier : Chacun sa technique");
+        }
+        term2("Croupier : C'est la fin du tour ! Je redistribue les cartes.");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) { }
+        tarouket.clearScreen();
+        term2("Croupier : Nouvelle manche ! ");
+        
+        // On remet les cartes des joueureuses dans cartes
+        ArrayList<Card> mainDeP1 = new ArrayList<>(Arrays.asList(p1.getCartes()));
+        cartes.addAll(mainDeP1);
+        ArrayList<Card> mainDeP2 = new ArrayList<>(Arrays.asList(p2.getCartes()));
+        cartes.addAll(mainDeP2);
+        // On retire les cartes des mains des joueurs
+        p1.setCartes(null, null);
+        p2.setCartes(null, null);
+
+        // Donner le pot de p1 à p2
+        ArrayList<Integer> potDeP1 = new ArrayList<>(p1.getPot());
+        p2.getMise().mise.addAll(potDeP1);
+
+        // Mettre le pot de p2 dans la mise de p2
+        ArrayList<Integer> potDeP2 = new ArrayList<>(p2.getPot());
+        p2.getMise().mise.addAll(potDeP2);
+
+        // Vider le pot des joueureuses
+        p1.Viderpot();
+        p2.Viderpot();
+
+        p2.getMise().mise.sort(null);
     }
 
 }

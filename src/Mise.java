@@ -42,15 +42,6 @@ public class Mise {
         }
     }
 
-    @Override
-    public String toString() {
-        String output = "";
-        for(int i = 0; i < mise.size(); i++) {
-            output += mise.get(i) + "; ";
-        }
-        return output;
-    }
-
     public boolean isPaire() {
         return this.paire;
     }

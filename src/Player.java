@@ -31,8 +31,16 @@ public class Player {
         this.mise.mise.remove(index);
     }
 
-    public String potToString() {
-        String output = "Pot de player" + num + ": ";
+    public String votrePotToToString() {
+        String output = "Votre pot est de " + ": ";
+        for(int i = 0; i < pot.size(); i++) {
+            output += pot.get(i) + " ";
+        }
+        return output;
+    }
+
+    public String croupierPotToToString() {
+        String output = "Le pot du croupier " + ": ";
         for(int i = 0; i < pot.size(); i++) {
             output += pot.get(i) + " ";
         }
@@ -60,8 +68,16 @@ public class Player {
         return counter;
     }
 
+    public ArrayList<Integer> getPot() {
+        return this.pot;
+    }
+
+    public void Viderpot() {
+        this.pot.clear();
+    }
+
     public String toString() {
-        return "Cartes de player" + num + ": " + cartes[0] + " " + cartes[1] + "\nMise : " + mise; 
+        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nMise : " + mise.mise.toString(); 
     }
 
     public void setCartes(Card c1, Card c2) {
