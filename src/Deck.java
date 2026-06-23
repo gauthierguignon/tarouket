@@ -1,0 +1,67 @@
+package src;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Deck {
+    
+    private ArrayList<Card> deck;
+
+    public Deck() {
+        this.deck = new ArrayList<>();
+        peuple(this.deck);
+    }
+
+    @Override
+    public String toString() {
+        String output = "";
+        int counter = 0;
+        for(int i = 0; i < this.deck.size(); i++) {
+            output = output + this.deck.get(i) + "; ";
+            counter ++;
+            if(counter == 13) {
+                output+="\n";
+                counter = 0;
+            }
+        }
+        return output;
+    }
+
+    private void peuple(ArrayList<Card> deck) {
+
+        // créer 52 cartes vides
+        for (int i = 0; i < 52; i++) {
+            Card card = new Card();
+            deck.add(card);
+        }
+
+        // mettre les couleurs
+        int counterColor = 0;
+        Color[] tabColor = Color.values();
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 13; j++) {
+                this.deck.get(j+counterColor).setColor(tabColor[i]);
+            }
+            counterColor = counterColor + 13;
+        }
+
+        // mettre les faces
+        int counterFace = 0;
+        Face[] tabFace = Face.values();
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 13; j++) {
+                this.deck.get(j+counterFace).setFace(tabFace[j]);
+            }
+            counterFace = counterFace + 13;
+        }
+    }
+
+    public void shuffle() {
+        Collections.shuffle(deck);
+        Collections.shuffle(deck);
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+}
