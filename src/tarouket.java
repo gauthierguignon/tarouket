@@ -28,71 +28,35 @@ public class tarouket {
         deck.shuffle();
         ArrayList<Card> cartes = new ArrayList<>(deck.getDeck());
 
-        
-        
         do {
             distributionCartes(p1, p2, cartes);
             term2("Mise du Croupier : " + p2.getMise().mise.toString());
             term2(p1.toString());
             
-            tarouket.petiteBlinde(p1, p2);
-
-            // Premier choix
-            
-            Scanner sc = new Scanner(System.in);
-            String choix;
-            do { 
-                term2("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
-                System.out.print("Vous : ");
-                choix = sc.nextLine();
-            } while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3"));
-
-            switch(choix) {
-
-                case "1" -> { // Player1 à checké
-
+            tarouket.petiteBlinde(p1, p2);            
+            String choix = tarouket.premierChoix(p1, p2, cartes);
+            switch (choix) {
+                case ("CHECK") -> {
+                    // Premier tour du croupier
+                    term("Croupier: C'est à mon tour de jouer !");
+                    // Définir si le croupier mise ou check ou fais tapis
                 }
-
-                case "2" -> {  // Player1 va de l'avant
-                    Scanner sc2 = new Scanner(System.in);
-
-                    // Premier tour obligatoire
-                    boolean tapis = false;
-                    term2("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?");
-                    String choix2 = sc2.nextLine();
-
-                    switch (choix2) {
-                        case "1" -> tarouket.relancer(p1, p2);
-                        case "2" -> {
-                            tarouket.faireTapis(p1, p2);
-                            tapis = true;
-                        }
-                    }
-
-                    // Tours suivants sauf si tapis
-                    if(!tapis) { 
-                        do {
-                            term2("\nCroupier : Tu veux relancer (1), faire tapis (2) ou terminer ton tour (3) ?");
-                            choix2 = sc2.nextLine();
-
-                            switch (choix2) {
-                                case "1" -> tarouket.relancer(p1, p2);
-                                case "2" -> tarouket.faireTapis(p1, p2);
-                            }
-                        } while (!choix.equals("3"));
-                    }
-
-
-
+                case ("AVANT") -> {
+                    // Premier tour du croupier
+                    term("Croupier: C'est à mon tour de jouer !");
+                    // Définir si le croupier mise ou laisse passer
                 }
-
-
-                case "3" -> { // Player 1 se couche
-                    tarouket.seCoucher(p1, p2, cartes);
+                case ("COUCHER") -> {
+                    // C'est la fin du tour donc rien à faire ici normalement
                 }
             }
+
+
+
+
+
         //} while (false);
-        } while (finDePartie(p1, p2));
+        } while (!finDePartie(p1, p2));
 
             
 
@@ -163,8 +127,8 @@ public class tarouket {
 
     // Définition d'une fin de partie
     public static boolean finDePartie(Player p1, Player p2) {
-        if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (p2.totalDeMise() == 0 && p2.totalDuPot() == 0)) return false;
-        return true;
+        if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (p2.totalDeMise() == 0 && p2.totalDuPot() == 0)) return true;
+        return false;
     }
 
     // Mise automatique de la petite Blinde
@@ -288,7 +252,7 @@ public class tarouket {
             case 2 -> term2("\nCroupier : Nom d'un pilon vermoulu !");
         }
         term("Croupier : Tu fais tapis !");
-        term2("Croupier : Petit rappel, quand on fait tapis on ne considère que le flop.");
+        term2("Croupier : Petit rappel, quand on fait tapis on ne considère que le flop. Capiche ?");
         
         // Ajouter au pot toutes la mise
         p1.getPot().addAll(p1.getMise().mise);
@@ -299,5 +263,62 @@ public class tarouket {
         term2(p1.toString());
 
     }
+
+    public static void allerDeLavant(Player p1, Player p2) {
+        Scanner sc2 = new Scanner(System.in);
+
+        // Premier tour obligatoire
+        boolean tapis = false;
+        term2("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?");
+        String choix2 = sc2.nextLine();
+
+        switch (choix2) {
+            case "1" -> tarouket.relancer(p1, p2);
+            case "2" -> {
+                tarouket.faireTapis(p1, p2);
+                tapis = true;
+            }
+        }
+
+        // Tours suivants sauf si tapis
+        if(!tapis) { 
+            do {
+                term2("\nCroupier : Tu veux relancer (1), faire tapis (2) ou terminer ton tour (3) ?");
+                choix2 = sc2.nextLine();
+
+                switch (choix2) {
+                    case "1" -> tarouket.relancer(p1, p2);
+                    case "2" -> tarouket.faireTapis(p1, p2);
+                }
+            } while (!choix2.equals("3"));
+        }
+    }
+
+    public static String premierChoix(Player p1, Player p2, ArrayList<Card> cartes) {
+            Scanner sc = new Scanner(System.in);
+            String choix;
+            do { 
+                term2("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
+                System.out.print("Vous : ");
+                choix = sc.nextLine();
+            } while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3"));
+
+            switch(choix) {
+                case "1" -> {
+                    term2("\nCroupier : Tu checkes !"); 
+                    return "CHECK";
+                }
+                case "2" -> {
+                        tarouket.allerDeLavant(p1,p2);
+                        return "AVANT";
+                    }
+                case "3" -> {
+                    tarouket.seCoucher(p1, p2, cartes);
+                    return "COUCHER";
+                }
+            }
+            throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
+    }
+
 
 }
