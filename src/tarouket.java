@@ -54,12 +54,35 @@ public class tarouket {
                 }
 
                 case "2" -> {  // Player1 va de l'avant
+                    Scanner sc2 = new Scanner(System.in);
 
-                    tarouket.allerDeLavant(p1, p2);
+                    // Premier tour obligatoire
+                    boolean tapis = false;
+                    term2("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?");
+                    String choix2 = sc2.nextLine();
 
-                    // TODO
-                    // mettre cette méthode dans un do while :
-                    // le joueur doit pouvoir faire tapis ou miser plusieurs atouts
+                    switch (choix2) {
+                        case "1" -> tarouket.relancer(p1, p2);
+                        case "2" -> {
+                            tarouket.faireTapis(p1, p2);
+                            tapis = true;
+                        }
+                    }
+
+                    // Tours suivants sauf si tapis
+                    if(!tapis) { 
+                        do {
+                            term2("\nCroupier : Tu veux relancer (1), faire tapis (2) ou terminer ton tour (3) ?");
+                            choix2 = sc2.nextLine();
+
+                            switch (choix2) {
+                                case "1" -> tarouket.relancer(p1, p2);
+                                case "2" -> tarouket.faireTapis(p1, p2);
+                            }
+                        } while (!choix.equals("3"));
+                    }
+
+
 
                 }
 
@@ -140,7 +163,7 @@ public class tarouket {
 
     // Définition d'une fin de partie
     public static boolean finDePartie(Player p1, Player p2) {
-        if (p1.totalDeMise() == 0 || p2.totalDeMise() == 0) return false;
+        if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (p2.totalDeMise() == 0 && p2.totalDuPot() == 0)) return false;
         return true;
     }
 
@@ -177,7 +200,7 @@ public class tarouket {
         term2("Total : " + p2.totalDuPot());
     }
 
-    public static void allerDeLavant(Player p1, Player p2) {
+    public static void relancer(Player p1, Player p2) {
         Random rand2 = new Random();
         int rez2 = rand2.nextInt(4)+1;
         switch(rez2) {
@@ -208,7 +231,7 @@ public class tarouket {
 
         // mettre dans le pot de p1 valeur
         tarouket.clearScreen();
-        term2("Croupier : tu as misé " + valeur + "!");
+        term2("Croupier : Tu as misé " + valeur + "!");
         p1.ajouterAuPot(valeur);
         tarouket.afficherPots(p1, p2);
         term2(p1.toString());
@@ -254,6 +277,27 @@ public class tarouket {
         p2.Viderpot();
 
         p2.getMise().mise.sort(null);
+    }
+
+    public static void faireTapis(Player p1, Player p2) {
+        tarouket.clearScreen();
+        Random rand2 = new Random();
+        int rez2 = rand2.nextInt(2)+1;
+        switch(rez2) {
+            case 1 -> term2("\nCroupier : Tonnere de Brest !");
+            case 2 -> term2("\nCroupier : Nom d'un pilon vermoulu !");
+        }
+        term("Croupier : Tu fais tapis !");
+        term2("Croupier : Petit rappel, quand on fait tapis on ne considère que le flop.");
+        
+        // Ajouter au pot toutes la mise
+        p1.getPot().addAll(p1.getMise().mise);
+        // Vider la mise du joueur
+        p1.getMise().mise.clear();
+
+        tarouket.afficherPots(p1, p2);
+        term2(p1.toString());
+
     }
 
 }

@@ -77,7 +77,7 @@ public class Player {
     }
 
     public String toString() {
-        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nMise : " + mise.mise.toString(); 
+        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nVotre Mise : " + mise.mise.toString(); 
     }
 
     public void setCartes(Card c1, Card c2) {
