@@ -19,7 +19,7 @@ public class Deck {
         for(int i = 0; i < this.deck.size(); i++) {
             output = output + this.deck.get(i) + "; ";
             counter ++;
-            if(counter == 13) {
+            if(counter == 14) {
                 output+="\n";
                 counter = 0;
             }
@@ -29,8 +29,8 @@ public class Deck {
 
     private void peuple(ArrayList<Card> deck) {
 
-        // créer 52 cartes vides
-        for (int i = 0; i < 52; i++) {
+        // créer 56 cartes vides
+        for (int i = 0; i < 56; i++) {
             Card card = new Card();
             deck.add(card);
         }
@@ -39,20 +39,20 @@ public class Deck {
         int counterColor = 0;
         Color[] tabColor = Color.values();
         for(int i = 0; i < 4; i++) {
-            for(int j = 0; j < 13; j++) {
+            for(int j = 0; j < 14; j++) {
                 this.deck.get(j+counterColor).setColor(tabColor[i]);
             }
-            counterColor = counterColor + 13;
+            counterColor = counterColor + 14;
         }
 
         // mettre les faces
         int counterFace = 0;
         Face[] tabFace = Face.values();
         for(int i = 0; i < 4; i++) {
-            for(int j = 0; j < 13; j++) {
+            for(int j = 0; j < 14; j++) {
                 this.deck.get(j+counterFace).setFace(tabFace[j]);
             }
-            counterFace = counterFace + 13;
+            counterFace = counterFace + 14;
         }
     }
 

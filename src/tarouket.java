@@ -34,8 +34,9 @@ public class tarouket {
             term2(p1.toString());
             
             tarouket.petiteBlinde(p1, p2);            
-            String choix = tarouket.premierChoix(p1, p2, cartes);
-            switch (choix) {
+            String choix1 = tarouket.premierChoix(p1, p2, cartes);
+
+            switch (choix1) {
                 case ("CHECK") -> {
                     // Premier tour du croupier
                     term("Croupier: C'est à mon tour de jouer !");
@@ -47,18 +48,15 @@ public class tarouket {
                     // Définir si le croupier mise ou laisse passer
                 }
                 case ("COUCHER") -> {
-                    // C'est la fin du tour donc rien à faire ici normalement
+                    // On saute à l'évaluation de la condition finDePartie()
+                    continue;
                 }
             }
 
 
-
-
-
-        //} while (false);
         } while (!finDePartie(p1, p2));
 
-            
+        tarouket.theEnd(p1, p2);
 
     }
     
@@ -99,12 +97,12 @@ public class tarouket {
         cartes.subList(0, 4).clear();
     }
     
-    // Affichage dans le terminal
+    // Affichage dans le terminal \n x2
     public static void term2(String phrase) {
         for(int i = 0; i<phrase.length(); i++) {
             System.out.print(phrase.charAt(i));
             try {
-                Thread.sleep(30);
+                Thread.sleep(0); //30
             } catch (InterruptedException e) {
                 
             }
@@ -112,17 +110,29 @@ public class tarouket {
         System.out.println("\n");
     }
 
-    // Afichage sans \n
+    // Afichage dans le terminal \n x1
     public static void term(String phrase) {
         for(int i = 0; i<phrase.length(); i++) {
             System.out.print(phrase.charAt(i));
             try {
-                Thread.sleep(30);
+                Thread.sleep(0); //30
             } catch (InterruptedException e) {
                 
             }
         }
         System.out.println("");
+    }
+
+    // Affichage dans le terminal sans \n
+    public static void ter(String phrase) {
+        for(int i = 0; i<phrase.length(); i++) {
+            System.out.print(phrase.charAt(i));
+            try {
+                Thread.sleep(0); //30
+            } catch (InterruptedException e) {
+                
+            }
+        }
     }
 
     // Définition d'une fin de partie
@@ -174,6 +184,7 @@ public class tarouket {
             case 4 -> term("\nCroupier : Tu bluffes Martini !");
         }
         Scanner sc2 = new Scanner(System.in);
+        
         String choix2;
         ArrayList<Integer> miseDeP1;
         int valeur = -1;
@@ -183,6 +194,7 @@ public class tarouket {
                 term2("\nCroupier : Capitaine, zêtes bourré ou quoi ?! Faut miser les cartes dans ta Mise. Allez on recommence ! ");
             }
             term2("\nCroupier : Tu veux relancer de combien mon coco ? Moi, j'ai pas besoin de te suivre.");
+            ter("Vous : Je relance de ");
             choix2 = sc2.nextLine();
             try {
                 valeur = Integer.parseInt(choix2); // user donne la valeur qu'il veut mettre dans son pot
@@ -273,25 +285,34 @@ public class tarouket {
         String choix2 = sc2.nextLine();
 
         switch (choix2) {
-            case "1" -> tarouket.relancer(p1, p2);
+            case "1" -> {
+                term("\nVous : Je relance !");
+                tarouket.relancer(p1, p2);
+            }
             case "2" -> {
                 tarouket.faireTapis(p1, p2);
                 tapis = true;
             }
         }
 
+        int counter = 2;
         // Tours suivants sauf si tapis
-        if(!tapis) { 
+        if(!tapis) {
             do {
-                term2("\nCroupier : Tu veux relancer (1), faire tapis (2) ou terminer ton tour (3) ?");
+                String prompt = "\nCroupier : Tu veux relancer une " + counter + "e fois (oui) ou tu t'arrêtes là (non) ?";
+                term2(prompt);
+                // prompt = "\nCroupier : Tu veux relancer d'avantage (1) ou tu t'arrêtes là (2) ?";
+                System.out.print("Vous : ");
                 choix2 = sc2.nextLine();
-
-                switch (choix2) {
-                    case "1" -> tarouket.relancer(p1, p2);
-                    case "2" -> tarouket.faireTapis(p1, p2);
+                if (choix2.equals("oui")) {
+                    term("\nVous : Je relance une " + counter + "e fois");
+                    tarouket.relancer(p1, p2);
+                    counter ++;
                 }
-            } while (!choix2.equals("3"));
+            } while (!choix2.equals("non"));
         }
+
+
     }
 
     public static String premierChoix(Player p1, Player p2, ArrayList<Card> cartes) {
@@ -320,5 +341,48 @@ public class tarouket {
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
     }
 
+    public static void theEnd(Player p1, Player p2) {
+        tarouket.clearScreen();
+
+        if(p1.getMise().mise.isEmpty()) {
+            Random rand3 = new Random();
+            int rez3 = rand3.nextInt(5)+1;
+            term2("Croupier : Tu as perdu !");
+            switch(rez3) {
+                case 1 -> term2("Croupier : La prochaine fois Mousaillon, on met de l'argent sur la table ! ");
+                case 2 -> term2("Croupier : Reviens quand tu veux, t'as besoin de t'entraîner !");
+                case 3 -> term2("Croupier : Ma parole ! T'es aussi mauvais qu'un chimpanzé !");
+                case 4 -> term2("Croupier : On parie 50 et on se fait ta revanche ?");
+                case 5 -> term2("Croupier : Pas sûr que t'entrainer suffise à me battre... ");
+            }
+        } else {
+            Random rand3 = new Random();
+            int rez3 = rand3.nextInt(4)+1;
+            term2("Croupier : Tu as gagné !");
+            switch(rez3) {
+                case 1 -> term2("Croupier : Un coup de chance certainement ...");
+                case 2 -> term2("Croupier : Tu m'autorises une revanche ?");
+                case 3 -> term2("Croupier : Espèce de trognon de pomme oxydé ! Tu t'en tireras pas si facilement !");
+                case 4 -> term2("Croupier : Ma foi ... qui eût cru que tu en étais capable ?");
+            }
+        }
+
+        term2("A la prochaine, pour une partie de Tarouket !");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+        System.out.print("· ");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+        System.out.print("· ");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+        System.out.print("·\n");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+    }
 
 }
