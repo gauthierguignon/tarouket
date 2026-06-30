@@ -5,7 +5,7 @@
 javac -d bin -cp bin src/*.java
 
 ## Execution
-java -cp bin src.tarouket
+java -cp bin src.Main
 
 # Histoire
 Le Tarouket est un jeu d'argent à deux joueurs dérivé du poker, traditionnellement associé aux milieux maritimes. Selon les récits populaires, il serait apparu en France dans les années 1990, à une période où le poker gagnait en popularité tout en demeurant relativement peu accessible aux populations les moins aisées.

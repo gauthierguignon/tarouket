@@ -7,35 +7,39 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Tarouket {
- 
-    public static void main(String[] args) {
-        
-        // Attributions des mises
-        boolean bool = Tarouket.PileOuFace();
-        
-        Player p1;
-        Player p2;
 
-        if(!bool) {
+    private final Scanner sc = new Scanner(System.in);
+    private final Player p1;
+    private final Player p2;
+    private ArrayList<Card> cartes;
+
+    public Tarouket() {
+
+        boolean bool = pileOuFace();
+        if (!bool) {
             p1 = new Player(1, true);
-            p2 = new Player (2, false);
+            p2 = new Player(2, false);
         } else {
             p1 = new Player(1, false);
-            p2 = new Player (2, true);
+            p2 = new Player(2, true);
         }
 
         // Création du jeu de cartes
         Deck deck = new Deck();
         deck.shuffle();
-        ArrayList<Card> cartes = new ArrayList<>(deck.getDeck());
+        cartes = new ArrayList<>(deck.getDeck());
+    }
+
+    //Squelette du jeu
+    public void run() {
 
         do {
-            distributionCartes(p1, p2, cartes);
+            this.distributionCartes();
             term2("Mise du Croupier : " + p2.getMise().toString());
             term2(p1.toString());
             
-            Tarouket.petiteBlinde(p1, p2);            
-            String choix1 = Tarouket.premierChoix(p1, p2, cartes);
+            this.petiteBlinde();            
+            String choix1 = this.premierChoix();
 
             switch (choix1) {
                 case ("CHECK") -> {
@@ -55,16 +59,15 @@ public class Tarouket {
             }
 
             
-        } while (!finDePartie(p1, p2));
+        } while (!this.finDePartie());
         
-        Tarouket.theEnd(p1, p2);
+        this.theEnd();
 
     }
     
     // Tirage a pile ou face
-    public static boolean PileOuFace() {
+    public boolean pileOuFace() {
         
-        Scanner sc = new Scanner(System.in);
         String choix;
         do {
             term2("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ");
@@ -91,7 +94,7 @@ public class Tarouket {
     }
 
     // distribution des cartes aux joueureuses
-    public static void distributionCartes(Player p1, Player p2, ArrayList<Card> cartes) {
+    public void distributionCartes() {
         term("Croupier : Tarouket !\n\n");
         p1.setCartes(cartes.get(0), cartes.get(1));
         p2.setCartes(cartes.get(2), cartes.get(3));
@@ -137,15 +140,14 @@ public class Tarouket {
     }
 
     // Définition d'une fin de partie
-    public static boolean finDePartie(Player p1, Player p2) {
+    public boolean finDePartie() {
         if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (p2.totalDeMise() == 0 && p2.totalDuPot() == 0)) return true;
         return false;
     }
 
     // Mise automatique de la petite Blinde
-    public static void petiteBlinde(Player p1, Player p2) {
+    public void petiteBlinde() {
             
-        Scanner sc = new Scanner(System.in);
         String choix = "";
         do {
             if(choix.equals("non"))term2("\nCroupier : Nan mais t'as pas le choix en fait ... ");
@@ -159,7 +161,7 @@ public class Tarouket {
             p1.petiteBlinde();
             p2.petiteBlinde();
             
-            Tarouket.afficherPots(p1, p2);
+            this.afficherPots();
 
             term2(p1.toString());
     }
@@ -168,14 +170,14 @@ public class Tarouket {
         System.out.print("\033[H\033[J");
     }
 
-    public static void afficherPots(Player p1, Player p2) {
+    public void afficherPots() {
         term(p1.votrePotToToString());
         term2("Total : " + p1.totalDuPot());
         term(p2.croupierPotToToString());
         term2("Total : " + p2.totalDuPot());
     }
 
-    public static void relancer(Player p1, Player p2) {
+    public void relancer() {
         Random rand2 = new Random();
         int rez2 = rand2.nextInt(4)+1;
         switch(rez2) {
@@ -184,7 +186,6 @@ public class Tarouket {
             case 3 -> term("\nCroupier : AHAH ! Je m'y attendais à celle-là !");
             case 4 -> term("\nCroupier : Tu bluffes Martini !");
         }
-        Scanner sc2 = new Scanner(System.in);
         
         String choix2;
         List<Integer> miseDeP1;
@@ -196,7 +197,7 @@ public class Tarouket {
             }
             term2("\nCroupier : Tu veux relancer de combien mon coco ? Moi, j'ai pas besoin de te suivre.");
             ter("Vous : Je relance de ");
-            choix2 = sc2.nextLine();
+            choix2 = sc.nextLine();
             try {
                 valeur = Integer.parseInt(choix2); // user donne la valeur qu'il veut mettre dans son pot
             } catch (NumberFormatException e) {
@@ -210,11 +211,11 @@ public class Tarouket {
         Tarouket.clearScreen();
         term2("Croupier : Tu as misé " + valeur + "!");
         p1.ajouterAuPot(valeur);
-        Tarouket.afficherPots(p1, p2);
+        this.afficherPots();
         term2(p1.toString());
     }
 
-    public static void seCoucher(Player p1, Player p2, ArrayList<Card> cartes ) {
+    public void seCoucher() {
         Random rand3 = new Random();
         int rez3 = rand3.nextInt(6)+1;
         switch(rez3) {
@@ -256,7 +257,7 @@ public class Tarouket {
         p2.getMise().sort();
     }
 
-    public static void faireTapis(Player p1, Player p2) {
+    public void faireTapis() {
         Tarouket.clearScreen();
         Random rand2 = new Random();
         int rez2 = rand2.nextInt(2)+1;
@@ -272,26 +273,25 @@ public class Tarouket {
         // Vider la mise du joueur
         p1.getMise().clear();
 
-        Tarouket.afficherPots(p1, p2);
+        this.afficherPots();
         term2(p1.toString());
 
     }
 
-    public static void allerDeLavant(Player p1, Player p2) {
-        Scanner sc2 = new Scanner(System.in);
+    public void allerDeLavant() {
 
         // Premier tour obligatoire
         boolean tapis = false;
         term2("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?");
-        String choix2 = sc2.nextLine();
+        String choix2 = sc.nextLine();
 
         switch (choix2) {
             case "1" -> {
                 term("\nVous : Je relance !");
-                Tarouket.relancer(p1, p2);
+                this.relancer();
             }
             case "2" -> {
-                Tarouket.faireTapis(p1, p2);
+                this.faireTapis();
                 tapis = true;
             }
         }
@@ -304,10 +304,10 @@ public class Tarouket {
                 term2(prompt);
                 // prompt = "\nCroupier : Tu veux relancer d'avantage (1) ou tu t'arrêtes là (2) ?";
                 ter("Vous : ");
-                choix2 = sc2.nextLine();
+                choix2 = sc.nextLine();
                 if (choix2.equals("oui")) {
                     term("\nVous : Je relance une " + counter + "e fois");
-                    Tarouket.relancer(p1, p2);
+                    this.relancer();
                     counter ++;
                 } else {
                     term2("\nVous : Je m'arrête là.\n");
@@ -318,8 +318,8 @@ public class Tarouket {
 
     }
 
-    public static String premierChoix(Player p1, Player p2, ArrayList<Card> cartes) {
-            Scanner sc = new Scanner(System.in);
+    public String premierChoix() {
+            
             String choix;
             do { 
                 term2("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
@@ -333,18 +333,18 @@ public class Tarouket {
                     return "CHECK";
                 }
                 case "2" -> {
-                        Tarouket.allerDeLavant(p1,p2);
+                        this.allerDeLavant();
                         return "AVANT";
                     }
                 case "3" -> {
-                    Tarouket.seCoucher(p1, p2, cartes);
+                    this.seCoucher();
                     return "COUCHER";
                 }
             }
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
     }
 
-    public static void theEnd(Player p1, Player p2) {
+    public void theEnd() {
         Tarouket.clearScreen();
 
         if(p1.getMise().isEmpty()) {
