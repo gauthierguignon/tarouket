@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Player {
     
@@ -20,15 +21,15 @@ public class Player {
         // mettre dans le pot
         this.pot.add(this.mise.getMise(0));
         //enlever de mise
-        this.mise.mise.remove(0);
+        this.mise.removeFirst();
     }
 
     public void ajouterAuPot(int valeur) {
-        // attention à bien vérifier le contenu de valeur avant de passer en paramètre !
+        if (!this.mise.contains(valeur)) {
+            throw new IllegalArgumentException("Valeur " + valeur + " absente de la mise du joueur");
+        }
         this.pot.add(valeur);
-        //enlever de mise
-        int index = this.mise.mise.indexOf(valeur);
-        this.mise.mise.remove(index);
+        this.mise.remove(valeur);
     }
 
     public String votrePotToToString() {
@@ -77,7 +78,7 @@ public class Player {
     }
 
     public String toString() {
-        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nVotre Mise : " + mise.mise.toString(); 
+        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nVotre Mise : " + mise.toString(); 
     }
 
     public void setCartes(Card c1, Card c2) {
@@ -85,6 +86,9 @@ public class Player {
         cartes[1] = c2;
     }
 
+    public void ajouterAuPot(Collection<Integer> valeurs) {
+        this.pot.addAll(valeurs);
+    }
 
 
 }

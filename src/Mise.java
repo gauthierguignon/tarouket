@@ -1,11 +1,13 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Mise {
     
     private final boolean paire;
-    public ArrayList<Integer> mise;
+    private ArrayList<Integer> mise;
 
     public Mise(boolean paire) {
         this.paire = paire;
@@ -17,8 +19,48 @@ public class Mise {
         }
     }
 
+    // Dégager le getMise et mettre l'attribut en private ! 
     public Integer getMise(int i) {
         return this.mise.get(i);
+    }
+
+    public boolean contains(int valeur) { 
+        return mise.contains(valeur); 
+    }
+
+    //retire la 1ere occurence de valeur trouvée
+    public void remove(int valeur) {
+        mise.remove(Integer.valueOf(valeur));
+    }
+
+    public void addAll(List<Integer> l){
+        mise.addAll(l);
+    }
+
+    // retire la première valeur
+    public void removeFirst() {
+        mise.remove(0);
+    }
+
+    public void clear() {
+        mise.clear();
+    }
+
+    public void sort() {
+        mise.sort(null);
+    }
+
+    public boolean isEmpty() {
+        return mise.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return mise.toString();
+    }
+
+    public List<Integer> getMise() {
+        return Collections.unmodifiableList(mise);
     }
 
     public int total() {
