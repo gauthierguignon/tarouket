@@ -5,13 +5,11 @@ import java.util.Collection;
 
 public class Player {
     
-    private int num;
     private Card[] cartes;
     private Mise mise;
     private ArrayList<Integer> pot;
 
-    public Player(int num, boolean bool) {
-        this.num = num;
+    public Player(boolean bool) {
         this.cartes = new Card[2];
         this.mise = new Mise(bool);
         this.pot = new ArrayList<>();
@@ -32,22 +30,13 @@ public class Player {
         this.mise.remove(valeur);
     }
 
-    public String votrePotToToString() {
+    public String potToString() {
         String output = "Votre pot est de " + ": ";
         for(int i = 0; i < pot.size(); i++) {
             output += pot.get(i) + " ";
         }
         return output;
     }
-
-    public String croupierPotToToString() {
-        String output = "Le pot du croupier " + ": ";
-        for(int i = 0; i < pot.size(); i++) {
-            output += pot.get(i) + " ";
-        }
-        return output;
-    }
-
 
     public Card[] getCartes() {
         return this.cartes;
@@ -90,5 +79,13 @@ public class Player {
         this.pot.addAll(valeurs);
     }
 
+    // adversaire perd son pot et tout retourner dans la Mise de Player
+    public void recupererPots(Player adversaire) {
+        this.getMise().addAll(adversaire.getPot());
+        this.getMise().addAll(this.getPot());
+        adversaire.Viderpot();
+        this.Viderpot();
+        this.getMise().sort();
+    }
 
 }
