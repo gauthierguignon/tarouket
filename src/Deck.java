@@ -2,10 +2,12 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class Deck {
     
     private ArrayList<Card> deck;
+    private final Random rand = new Random();
 
     public Deck() {
         this.deck = new ArrayList<>();
@@ -64,4 +66,10 @@ public class Deck {
     public ArrayList<Card> getDeck() {
         return deck;
     }
+
+    public Card drawRandomCard() {
+        int index = rand.nextInt(deck.size());
+        return deck.remove(index);
+    }
+
 }

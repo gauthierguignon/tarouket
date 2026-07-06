@@ -44,6 +44,12 @@ public final class Tarouket {
                 case ("CHECK") -> {
                     // Premier tour du croupier
                     vue.afficher1("Croupier: C'est à mon tour de jouer !");
+                    
+                    // do { 
+                    //     vue.afficher2(Arrays.toString(croupier.getCartes()));
+                    //     vue.demanderChoix("test", "");
+                    // } while (true);
+
                     // Définir si le croupier mise ou check ou fais tapis
                 }
                 case ("AVANT") -> {

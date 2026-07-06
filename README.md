@@ -52,8 +52,8 @@ Chaque carte porte son nombre de points.
 + 2 = 2
 + ...
 + Valet = 11
-+ Dame = 12
-+ Cavalier = 13
++ Cavalier = 12
++ Dame = 13
 + Roi = 14
 
 Chaque combinaison porte un multiplicateur spécifique :
