@@ -17,7 +17,7 @@ public class Croupier extends Player {
         return output;
     }
 
-    public String coinToss() {
+    public static String coinToss() {
         Random rand = new Random();
         boolean bool = rand.nextBoolean();
         String rez;

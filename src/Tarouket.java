@@ -2,9 +2,6 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 
 public final class Tarouket {
 
@@ -46,12 +43,12 @@ public final class Tarouket {
             switch (choix1) {
                 case ("CHECK") -> {
                     // Premier tour du croupier
-                    vue.afficher("Croupier: C'est à mon tour de jouer !");
+                    vue.afficher1("Croupier: C'est à mon tour de jouer !");
                     // Définir si le croupier mise ou check ou fais tapis
                 }
                 case ("AVANT") -> {
                     // Premier tour du croupier
-                    vue.afficher("Croupier: C'est à mon tour de jouer !");
+                    vue.afficher1("Croupier: C'est à mon tour de jouer !");
                     // Définir si le croupier mise ou laisse passer
                 }
                 case ("COUCHER") -> {
@@ -70,7 +67,7 @@ public final class Tarouket {
     // Tirage a pile ou face
     public boolean pileOuFace() {
         String choix = vue.demanderChoix("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ", "PILE", "FACE");
-        String coin = croupier.coinToss();
+        String coin = Croupier.coinToss();
         if(coin.equals(choix)) {
             vue.afficher("\nCroupier : Gagné ! tu auras le petit bout\n");
             return true;
@@ -105,6 +102,7 @@ public final class Tarouket {
     }
 
     public void relancer() {
+        vue.afficher1("\nVous : Je relance !");
         vue.croupierParleRandom("Tu penses m'effrayer ? C'est ce qu'on va voir !",
             "T'as une paire d'AS ? Mon oeil oui !",
             "AHAH ! Je m'y attendais à celle-là !",
@@ -113,7 +111,7 @@ public final class Tarouket {
         int valeur = vue.demanderMise(p1.getMise().getMise());
         // mettre dans le pot de p1 valeur
         vue.clearScreen();
-        vue.afficher2("Croupier : Tu as misé " + valeur + "!");
+        vue.afficher2("Croupier : Tu as misé " + valeur + " !");
         p1.ajouterAuPot(valeur);
         vue.afficherPots(p1, croupier);
         vue.afficher2(p1.toString());
@@ -156,21 +154,19 @@ public final class Tarouket {
         // Vider la mise du joueur
         p1.getMise().clear();
 
-        this.afficherPots();
+        vue.afficherPots(p1, croupier);
         vue.afficher2(p1.toString());
 
     }
 
     public void allerDeLavant() {
 
-        // Premier tour obligatoire
+        // Premier tour
         boolean tapis = false;
-        vue.afficher2("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?");
-        String choix2 = sc.nextLine();
+        String choix = vue.demanderChoix("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?", "1", "2");
 
-        switch (choix2) {
+        switch (choix) {
             case "1" -> {
-                vue.afficher("\nVous : Je relance !");
                 this.relancer();
             }
             case "2" -> {
@@ -184,30 +180,24 @@ public final class Tarouket {
         if(!tapis) {
             do {
                 String prompt = "\nCroupier : Tu veux relancer une " + counter + "e fois (oui) ou tu t'arrêtes là (non) ?";
-                vue.afficher2(prompt);
-                // prompt = "\nCroupier : Tu veux relancer d'avantage (1) ou tu t'arrêtes là (2) ?";
-                ter("Vous : ");
-                choix2 = sc.nextLine();
-                if (choix2.equals("oui")) {
+                choix = vue.demanderChoix(prompt, "oui", "non");
+
+                if (choix.equals("OUI")) {
                     vue.afficher("\nVous : Je relance une " + counter + "e fois");
                     this.relancer();
                     counter ++;
                 } else {
                     vue.afficher2("\nVous : Je m'arrête là.\n");
                 }
-            } while (!choix2.equals("non"));
+            } while (!choix.equals("NON"));
         }
-
-
     }
 
     public String premierChoix() {
             
             String choix;
             do { 
-                vue.afficher2("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)");
-                System.out.print("Vous : ");
-                choix = sc.nextLine();
+                choix = vue.demanderChoix("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)", "1", "2", "3");
             } while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3"));
 
             switch(choix) {
@@ -231,26 +221,20 @@ public final class Tarouket {
         vue.clearScreen();
 
         if(p1.getMise().isEmpty()) {
-            Random rand3 = new Random();
-            int rez3 = rand3.nextInt(5)+1;
-            vue.afficher2("Croupier : Tu as perdu !");
-            switch(rez3) {
-                case 1 -> vue.afficher2("Croupier : La prochaine fois Mousaillon, on met de l'argent sur la table ! ");
-                case 2 -> vue.afficher2("Croupier : Reviens quand tu veux, t'as besoin de t'entraîner !");
-                case 3 -> vue.afficher2("Croupier : Ma parole ! T'es aussi mauvais qu'un chimpanzé !");
-                case 4 -> vue.afficher2("Croupier : On parie 50 et on se fait ta revanche ?");
-                case 5 -> vue.afficher2("Croupier : Pas sûr que t'entrainer suffise à me battre... ");
-            }
+            vue.croupierParleRandom("Tu as perdu !");
+            vue.croupierParleRandom("La prochaine fois Mousaillon, on met de l'argent sur la table ! ",
+                "Reviens quand tu veux, t'as besoin de t'entraîner !",
+                "Ma parole ! C'était comme jouer contre un chimpanzé !",
+                "On parie 50 et on se fait ta revanche ?",
+                "Pas sûr que t'entrainer suffise à me battre... "
+            );
         } else {
-            Random rand3 = new Random();
-            int rez3 = rand3.nextInt(4)+1;
             vue.afficher2("Croupier : Tu as gagné !");
-            switch(rez3) {
-                case 1 -> vue.afficher2("Croupier : Un coup de chance certainement ...");
-                case 2 -> vue.afficher2("Croupier : Tu m'autorises une revanche ?");
-                case 3 -> vue.afficher2("Croupier : Espèce de trognon de pomme oxydé ! Tu t'en tireras pas si facilement !");
-                case 4 -> vue.afficher2("Croupier : Ma foi ... qui eût cru que tu en étais capable ?");
-            }
+            vue.croupierParleRandom("Un coup de chance certainement ...", 
+                "Tu m'autorises une revanche ?",
+                "Espèce de trognon de pomme oxydé ! Tu t'en tireras pas si facilement !",
+                "Ma foi ... qui eût cru que tu en étais capable ?"
+            );
         }
 
         vue.afficher2("A la prochaine, pour une partie de Tarouket !");

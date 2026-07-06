@@ -98,9 +98,9 @@ public class Vue {
     }
 
     public void afficherPots(Player p1, Croupier croupier) {
-        this.afficher(p1.potToString());
+        this.afficher1(p1.potToString());
         this.afficher2("Total : " + p1.totalDuPot());
-        this.afficher(croupier.potToString());
+        this.afficher1(croupier.potToString());
         this.afficher2("Total : " + croupier.totalDuPot());
     }
 
