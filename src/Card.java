@@ -1,6 +1,6 @@
 package src;
 
-public class Card {
+public class Card implements Comparable<Card>{
 
     private Color color;
     private Face face;
@@ -34,5 +34,11 @@ public class Card {
     public String toString() {
         return face.toString() + "-" + color.toString();
     }
+
+        @Override
+    public int compareTo(Card autre) {
+        return this.face.getValeur() - autre.face.getValeur();
+    }
+
 }
 

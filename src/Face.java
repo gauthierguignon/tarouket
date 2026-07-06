@@ -14,6 +14,6 @@ public enum Face {
         return valeur;
     }
 
-
+    
     
 }
