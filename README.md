@@ -42,33 +42,6 @@ Au tarouket, pas besoin de compter les points. On départage les mains comme au 
 
 Seul paticularité, les AS valent 1 point comme au tarot.
 
-Dans mon implémentation, j'utilise en revanche un système de points et de multiplicateurs pour départager deux mains.
-
-### Points des cartes
-
-Chaque carte porte son nombre de points. 
-
-+ AS = 1
-+ 2 = 2
-+ ...
-+ Valet = 11
-+ Cavalier = 12
-+ Dame = 13
-+ Roi = 14
-
-Chaque combinaison porte un multiplicateur spécifique :
-
-+ 1 paire :   x100
-+ 2 paires :  x200
-+ Brelan :    x300
-+ Suite :     x400
-+ Couleur :   x500
-+ Full :      x600
-+ Carré :     x700
-
-On notera que les combinaisons se cumulent. Une quinte flush est en fait une suite et une couleur.
-
-
 
 
 
