@@ -9,6 +9,10 @@ public final class Tarouket {
     private final Player p1;
     private final Croupier croupier;
     private ArrayList<Card> cartes;
+    private ArrayList<Card> riviere;
+
+    // TODO 
+    // Est-ce que je garde Cartes ou je mets un Deck à la place ? 
 
     //constructeur
     public Tarouket() {
@@ -27,6 +31,9 @@ public final class Tarouket {
         Deck deck = new Deck();
         deck.shuffle();
         cartes = new ArrayList<>(deck.getDeck());
+
+        // Création de la rivière
+        riviere = new ArrayList<>();
     }
 
     //Squelette du jeu
@@ -47,7 +54,7 @@ public final class Tarouket {
                     
                     // do { 
                     //     vue.afficher2(Arrays.toString(croupier.getCartes()));
-                    //     vue.demanderChoix("test", "");
+                    //     vuee = new.demanderChoix("test", "");
                     // } while (true);
 
                     // Définir si le croupier mise ou check ou fais tapis
@@ -136,6 +143,12 @@ public final class Tarouket {
         vue.clearScreen();
         vue.afficher2("Croupier : Nouvelle manche ! ");
         
+        this.finDeMain();
+
+        croupier.recupererPots(p1);
+    }
+
+    public void finDeMain() {
         // On remet les cartes des joueureuses dans cartes
         ArrayList<Card> mainDeP1 = new ArrayList<>(Arrays.asList(p1.getCartes()));
         cartes.addAll(mainDeP1);
@@ -144,8 +157,6 @@ public final class Tarouket {
         // On retire les cartes des mains des joueurs
         p1.setCartes(null, null);
         croupier.setCartes(null, null);
-
-        croupier.recupererPots(p1);
     }
 
     public void faireTapis() {
@@ -259,6 +270,65 @@ public final class Tarouket {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
+    }
+
+    public void comparerDeuxMains() {
+        ArrayList<Card> mainCompleteP1 = new ArrayList<>(this.riviere);
+        ArrayList<Card> mainCompleteCroupier = new ArrayList<>(this.riviere);
+
+        mainCompleteP1.addAll(Arrays.asList(p1.getCartes()));
+        mainCompleteCroupier.addAll(Arrays.asList(croupier.getCartes()));
+
+        EvaluateurMain evalP1 = new EvaluateurMain(mainCompleteP1);
+        EvaluateurMain evalCroupier = new EvaluateurMain(mainCompleteCroupier);
+
+        vue.afficher2("Rivière : \t" + this.riviere);
+        vue.afficher2("Votre main : \t" + Arrays.toString(p1.getCartes()));
+        vue.afficher2("Main du Croupier : \t" +  Arrays.toString(croupier.getCartes()));
+
+        if(evalP1.score() > evalCroupier.score()) {
+            vue.afficher2("Tu GAGNES avec " + evalP1.meilleuresCartes(evalP1.meilleureCombinaison()));
+            p1.recupererPots(croupier);
+        } else {
+            vue.afficher2("Je L'EMPORTE avec " + evalCroupier.meilleuresCartes(evalCroupier.meilleureCombinaison()));
+            croupier.recupererPots(p1);
+        }
+        this.finDeMain();
+    }
+
+    // test
+    // Pour lancer ce test il faut désactiver l'afficahe du vue 
+    // sinon ça prend trop de temps à chaque essai
+    // l22 et l96
+
+    public static void main(String[] args) {
+        Tarouket tarouket;
+        EvaluateurMain evalP1;
+        EvaluateurMain evalCroupier;
+        int counter = 0;
+
+        do {
+            counter++;
+            tarouket = new Tarouket();
+            tarouket.distributionCartes();
+
+            for (int i = 0; i < 5; i++) {
+                tarouket.riviere.add(tarouket.cartes.get(i));
+            }
+
+            ArrayList<Card> mainP1 = new ArrayList<>(tarouket.riviere);
+            mainP1.addAll(Arrays.asList(tarouket.p1.getCartes()));
+            evalP1 = new EvaluateurMain(mainP1);
+
+            ArrayList<Card> mainCroupier = new ArrayList<>(tarouket.riviere);
+            mainCroupier.addAll(Arrays.asList(tarouket.croupier.getCartes()));
+            evalCroupier = new EvaluateurMain(mainCroupier);
+
+        } while (!(evalP1.meilleureCombinaison() == Combinaison.CARRE
+                && evalCroupier.meilleureCombinaison() == Combinaison.PAIRE));
+
+        System.out.println("Trouvé après " + counter + " essais.");
+        tarouket.comparerDeuxMains();
     }
 
 }

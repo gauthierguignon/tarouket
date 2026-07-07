@@ -261,7 +261,8 @@ public class EvaluateurMain {
     private ArrayList<Card> cartesPourCarteHaute() {
         ArrayList<Card> resultat = new ArrayList<>(this.cartes);
         resultat.sort(Collections.reverseOrder());
-        return new ArrayList<>(resultat.subList(0, 5));
+        int nombreACopier = Math.min(5, resultat.size());
+        return new ArrayList<>(resultat.subList(0, nombreACopier));
     }
 
     private ArrayList<Card> cartesPourPaire() {
@@ -283,10 +284,10 @@ public class EvaluateurMain {
         }
         // On ajoute les kickers les plus hauts à resultat
         kickers.sort(Collections.reverseOrder());
-        resultat.add(kickers.get(0));
-        resultat.add(kickers.get(1));
-        resultat.add(kickers.get(2));
-        
+        int nombreDeKickersAPrendre = Math.min(3, kickers.size());
+        for (int i = 0; i < nombreDeKickersAPrendre; i++) {
+            resultat.add(kickers.get(i));
+        }
         return resultat;
     }
 
@@ -303,19 +304,19 @@ public class EvaluateurMain {
 
         // On met les 2 paires dans résultat
         ArrayList<Card> resultat = new ArrayList<>();
-        Card meilleurKicker = null;
+        ArrayList<Card> autres = new ArrayList<>();
         for (Card carte : this.cartes) {
             int valeur = carte.getFace().getValeur();
             if (valeur == paireHaute || valeur == paireBasse) {
                 resultat.add(carte);
-            } else if (meilleurKicker == null || valeur > meilleurKicker.getFace().getValeur()) {
-                meilleurKicker = carte;
+            } else {
+                autres.add(carte);
             }
         }
-
-        // Ajout de la 5e carte
-        resultat.add(meilleurKicker);
-
+        if (!autres.isEmpty()) {
+            autres.sort(Collections.reverseOrder());
+            resultat.add(autres.get(0)); // on n'ajoute le kicker que s'il en existe un
+        }
         return resultat;
 }
 
@@ -334,9 +335,10 @@ public class EvaluateurMain {
                 kickers.add(carte);
             }
         }
-        kickers.sort(Collections.reverseOrder());
-        resultat.add(kickers.get(0));
-        resultat.add(kickers.get(1));
+        int nombreDeKickersAPrendre = Math.min(2, kickers.size());
+        for (int i = 0; i < nombreDeKickersAPrendre; i++) {
+            resultat.add(kickers.get(i));
+        }
         return resultat;
     }
 
@@ -435,12 +437,14 @@ public class EvaluateurMain {
                 meilleurKicker = carte;
             }
         }
-        resultat.add(meilleurKicker);
+        if (meilleurKicker != null) {
+            resultat.add(meilleurKicker);
+        }
         return resultat;
     }
 
     // renvoie les 5 cartes qui constituent la meilleure combinaison
-    private ArrayList<Card> meilleuresCartes(Combinaison combinaison) {
+    public ArrayList<Card> meilleuresCartes(Combinaison combinaison) {
         switch (combinaison) {
             case QUINTE_FLUSH_ROYALE, QUINTE_FLUSH -> {
                 return this.cartesPourSuite(this.cartesDeCouleur(this.getQuinteFlushColor()));
@@ -586,7 +590,7 @@ public class EvaluateurMain {
             Deck deck = new Deck();
             deck.shuffle();
             // cartes rivière
-            for(int i = 0; i < 5; i++) {
+            for(int i = 0; i < 1; i++) {
                 riviere.add(deck.drawRandomCard());
             }
             // cartes p1
@@ -602,7 +606,7 @@ public class EvaluateurMain {
 
             joueur1 = new EvaluateurMain(mainJ1);
             joueur2 = new EvaluateurMain(mainJ2);
-        } while (!(joueur1.meilleureCombinaison() == Combinaison.CARRE && joueur2.meilleureCombinaison() == Combinaison.BRELAN));
+        } while (!(joueur1.meilleureCombinaison() == Combinaison.PAIRE && joueur2.meilleureCombinaison() == Combinaison.PAIRE));
 
         // On retire la rivière des mains des joueurs pour l'affichage des mains
         ArrayList<Card> duoJ1 = new ArrayList<>(mainJ1);
