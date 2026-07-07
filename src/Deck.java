@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Deck {
     
-    private ArrayList<Card> deck;
+    private final ArrayList<Card> deck;
     private final Random rand = new Random();
 
     public Deck() {
@@ -69,7 +69,13 @@ public class Deck {
 
     public Card drawRandomCard() {
         int index = rand.nextInt(deck.size());
-        return deck.remove(index);
+        Card carte = deck.get(index);
+        deck.remove(index);
+        return carte;
+    }
+
+    public void addAll(ArrayList<Card> main) {
+        deck.addAll(main);
     }
 
 }

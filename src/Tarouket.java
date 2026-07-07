@@ -2,22 +2,22 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public final class Tarouket {
 
     private final Vue vue;
     private final Player p1;
     private final Croupier croupier;
-    private ArrayList<Card> cartes;
-    private ArrayList<Card> riviere;
-
-    // TODO 
-    // Est-ce que je garde Cartes ou je mets un Deck à la place ? 
+    private final Deck deck;
+    private final ArrayList<Card> riviere;
+    private final Random rand;
 
     //constructeur
     public Tarouket() {
 
         vue = new Vue();
+        rand = new Random();
         boolean bool = this.pileOuFace();
         if (!bool) {
             p1 = new Player(true);
@@ -28,9 +28,8 @@ public final class Tarouket {
         }
 
         // Création du jeu de cartes
-        Deck deck = new Deck();
+        deck = new Deck();
         deck.shuffle();
-        cartes = new ArrayList<>(deck.getDeck());
 
         // Création de la rivière
         riviere = new ArrayList<>();
@@ -39,36 +38,31 @@ public final class Tarouket {
     //Squelette du jeu
     public void run() {
 
+        boolean joueurCommence = true; // A changer pour que le croupier puisse commencer à DEALER
+        //joueurCommence = p1.getMise().isPaire();
+
         do {
             this.distributionCartes();
             vue.afficher2("Mise du Croupier : " + croupier.getMise().toString());
             vue.afficher2(p1.toString());
-            
-            this.petiteBlinde();            
-            String choix1 = this.premierChoix();
+            this.petiteBlinde();
 
-            switch (choix1) {
-                case ("CHECK") -> {
-                    // Premier tour du croupier
-                    vue.afficher1("Croupier: C'est à mon tour de jouer !");
-                    
-                    // do { 
-                    //     vue.afficher2(Arrays.toString(croupier.getCartes()));
-                    //     vuee = new.demanderChoix("test", "");
-                    // } while (true);
-
-                    // Définir si le croupier mise ou check ou fais tapis
-                }
-                case ("AVANT") -> {
-                    // Premier tour du croupier
-                    vue.afficher1("Croupier: C'est à mon tour de jouer !");
-                    // Définir si le croupier mise ou laisse passer
-                }
-                case ("COUCHER") -> {
-                    // On saute à l'évaluation de la condition finDePartie()
+            if(joueurCommence) {
+                joueurCommence = !joueurCommence;
+                EtatManche choix1 = this.joueurPremierChoix();
+                if (choix1 == EtatManche.COUCHER) {
                     continue;
                 }
+                
+                EtatManche choix2 = this.croupierPremierChoix(choix1);
+
+
+            } else { // le croupier commence la manche
+                EtatManche choix1 = this.croupierPremierChoix(EtatManche.DEALER);
             }
+
+
+
 
             
         } while (!this.finDePartie());
@@ -83,9 +77,11 @@ public final class Tarouket {
         String coin = Croupier.coinToss();
         if(coin.equals(choix)) {
             vue.afficher("\nCroupier : Gagné ! tu auras le petit bout\n");
+            // vue.afficher("Croupier : Et c'est moi qui Deal");
             return true;
         } else {
             vue.afficher("\nCroupier : Perdu ! ton adversaire aura le petit bout\n");
+            // vue.afficher("Croupier : Mais c'est toi qui Deal");
             return false;
         }
     }
@@ -93,9 +89,8 @@ public final class Tarouket {
     // distribution des cartes aux joueureuses
     public void distributionCartes() {
         vue.afficher("Croupier : Tarouket !\n\n");
-        p1.setCartes(cartes.get(0), cartes.get(1));
-        croupier.setCartes(cartes.get(2), cartes.get(3));
-        cartes.subList(0, 4).clear();
+        p1.setCartes(deck.drawRandomCard(), deck.drawRandomCard());
+        croupier.setCartes(deck.drawRandomCard(), deck.drawRandomCard());
     }
     
     // Définition d'une fin de partie
@@ -151,9 +146,9 @@ public final class Tarouket {
     public void finDeMain() {
         // On remet les cartes des joueureuses dans cartes
         ArrayList<Card> mainDeP1 = new ArrayList<>(Arrays.asList(p1.getCartes()));
-        cartes.addAll(mainDeP1);
+        deck.addAll(mainDeP1);
         ArrayList<Card> mainDuCroupier = new ArrayList<>(Arrays.asList(croupier.getCartes()));
-        cartes.addAll(mainDuCroupier);
+        deck.addAll(mainDuCroupier);
         // On retire les cartes des mains des joueurs
         p1.setCartes(null, null);
         croupier.setCartes(null, null);
@@ -210,7 +205,7 @@ public final class Tarouket {
         }
     }
 
-    public String premierChoix() {
+    public EtatManche joueurPremierChoix() {
             
             String choix;
             do { 
@@ -220,15 +215,15 @@ public final class Tarouket {
             switch(choix) {
                 case "1" -> {
                     vue.afficher2("\nCroupier : Tu checkes !"); 
-                    return "CHECK";
+                    return EtatManche.CHECK;
                 }
                 case "2" -> {
                         this.allerDeLavant();
-                        return "AVANT";
+                        return EtatManche.AVANT;
                     }
                 case "3" -> {
                     this.seCoucher();
-                    return "COUCHER";
+                    return EtatManche.COUCHER;
                 }
             }
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
@@ -296,6 +291,52 @@ public final class Tarouket {
         this.finDeMain();
     }
 
+    public EtatManche croupierPremierChoix(EtatManche etat) {
+        switch (etat) {
+            case DEALER -> { // le croupier commence à dealer
+                this.croupierCheck();
+                return EtatManche.CHECK;
+            }
+            case CHECK -> { // le joueur check
+                vue.afficher1("Croupier: C'est à mon tour de jouer !");
+                // Définir si le croupier mise ou check ou fait tapis
+                int alea = rand.nextInt(100); // de 0 à 99
+                if (alea < 50) {
+                    this.croupierCheck();
+                    this.peuplerRiviere(3);
+                    vue.afficher2("Voici le flop : " + this.riviere.toString());
+                    return EtatManche.CHECK;
+                } else if (alea >= 50 && alea < 95) {
+                    // this.croupierVaDeLavant();
+                    return EtatManche.AVANT;
+                } else {
+                    // this.croupierFaisTapis();
+                    return EtatManche.TAPIS;
+                }
+
+            }
+            case AVANT -> { // le joueur est allé de l'avant
+                vue.afficher1("Croupier: C'est à mon tour de jouer !");
+                // Définir si le croupier mise ou laisse passer
+                return EtatManche.AVANT;
+            }
+            default -> throw new IllegalArgumentException("Unexpected value: " + etat);
+        }
+    }
+
+    public void croupierCheck(){
+        vue.afficher2("Je checke");
+    }
+
+    public void peuplerRiviere(int n){
+        for (int i = 0; i < n; i++) {
+            riviere.add(deck.drawRandomCard());
+        }
+    }
+
+
+
+    
     // test
     // Pour lancer ce test il faut désactiver l'afficahe du vue 
     // sinon ça prend trop de temps à chaque essai
@@ -313,7 +354,7 @@ public final class Tarouket {
             tarouket.distributionCartes();
 
             for (int i = 0; i < 5; i++) {
-                tarouket.riviere.add(tarouket.cartes.get(i));
+                tarouket.riviere.add(tarouket.deck.drawRandomCard());
             }
 
             ArrayList<Card> mainP1 = new ArrayList<>(tarouket.riviere);
