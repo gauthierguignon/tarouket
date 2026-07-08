@@ -39,30 +39,41 @@ public final class Tarouket {
     public void run() {
 
         boolean joueurCommence = true; // A changer pour que le croupier puisse commencer à DEALER
-        //joueurCommence = p1.getMise().isPaire();
+        //joueurCommence != p1.getMise().isPaire();
+
+        EtatManche choix;
 
         do {
+            joueurCommence = !joueurCommence;
+
             this.distributionCartes();
             vue.afficher2("Mise du Croupier : " + croupier.getMise().toString());
             vue.afficher2(p1.toString());
             this.petiteBlinde();
-
+            
             if(joueurCommence) {
-                joueurCommence = !joueurCommence;
-                EtatManche choix1 = this.joueurPremierChoix();
-                if (choix1 == EtatManche.COUCHER) {
-                    continue;
-                }
-                
-                EtatManche choix2 = this.croupierPremierChoix(choix1);
-
-
-            } else { // le croupier commence la manche
-                EtatManche choix1 = this.croupierPremierChoix(EtatManche.DEALER);
+                choix = this.joueurPremierChoix();
+                if (choix == EtatManche.COUCHER) continue;
+            } else {
+                choix = this.croupierPremierChoix(EtatManche.DEALER);
+                if (choix == EtatManche.COUCHER) continue;
             }
 
+            if(joueurCommence) {
+                choix = this.JoueurSecondChoix(choix);
+                if (choix == EtatManche.COUCHER) continue;
+            } else {
+                choix = this.croupierSecondChoix();
+                if (choix == EtatManche.COUCHER) continue;
+            }
 
-
+            if(joueurCommence) {
+                choix = this.JoueurTroisiemeChoix(choix);
+                if (choix == EtatManche.COUCHER) continue;
+            } else {
+                choix = this.croupierTroisiemeChoix();
+                if (choix == EtatManche.COUCHER) continue;
+            }
 
             
         } while (!this.finDePartie());
@@ -133,8 +144,9 @@ public final class Tarouket {
             "On se demande bien qui va gagner",
             "Chacun sa technique"
         );
+        vue.afficher2("Le croupier avait en main : " + Arrays.toString(croupier.getCartes()));
         vue.croupierParleRandom("C'est la fin du tour ! Je redistribue les cartes.");
-        vue.wait(1000);
+        vue.exigerOui("Tu es prêt ? (oui)");
         vue.clearScreen();
         vue.afficher2("Croupier : Nouvelle manche ! ");
         
