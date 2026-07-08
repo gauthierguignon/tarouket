@@ -17,9 +17,11 @@ public class Player {
     }
 
     public void petiteBlinde() {
-        // mettre dans le pot
+        // On s'assure que la mise est triée
+        mise.sort();
+        // mettre dans le pot l'atout le plus faible
         this.pot.add(this.mise.getMise(0));
-        //enlever de mise
+        //enlever de mise cet atout
         this.mise.removeFirst();
     }
 
@@ -97,21 +99,21 @@ public class Player {
         return this.mise.isPaire();
     }
 
-    public EtatManche preFlop(Vue vue) {
+    public Choix demanderChoix(Vue vue) {
             String choix = vue.demanderChoix("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)", "1", "2", "3");
 
             switch(choix) {
                 case "1" -> {
                     vue.afficher2("\nVous : Je checke !"); 
-                    return EtatManche.CHECK;
+                    return Choix.CHECK;
                 }
                 case "2" -> {
                     vue.afficher2("Vous : Je vais de l'avant.");
-                        return EtatManche.AVANT;
+                        return Choix.AVANT;
                     }
                 case "3" -> {
                     vue.afficher2("Vous : Je me couche");
-                    return EtatManche.COUCHER;
+                    return Choix.COUCHER;
                 }
             }
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
@@ -142,10 +144,10 @@ public class Player {
 
         switch (choix) {
             case "1" -> {
-                this.relancer();
+                this.relancer(vue, tarouket);
             }
             case "2" -> {
-                this.faireTapis();
+                this.faireTapis(vue, tarouket);
                 tapis = true;
             }
         }
@@ -159,7 +161,7 @@ public class Player {
 
                 if (choix.equals("OUI")) {
                     vue.afficher("\nVous : Je relance une " + counter + "e fois");
-                    this.relancer();
+                    this.relancer(vue, tarouket);
                     counter ++;
                 } else {
                     vue.afficher2("\nVous : Je m'arrête là.\n");
@@ -199,5 +201,6 @@ public class Player {
         vue.afficherPots(this, tarouket.getCroupier());
         vue.afficher2(this.toString());
     }
+
 
 }

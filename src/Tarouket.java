@@ -12,8 +12,15 @@ public final class Tarouket {
     private final Deck deck;
     private final ArrayList<Card> riviere;
     private final Random rand;
+    private Player joueurEnCours;
+    private Player enAvant;
+    private boolean limiteTapis;
 
-    //constructeur
+    private final int PRE_FLOP = 0;
+    private final int FLOP = 3;
+    private final int TURN = 1;
+    private final int RIVER = 1;
+
     public Tarouket() {
 
         vue = new Vue();
@@ -22,9 +29,11 @@ public final class Tarouket {
         if (!bool) {
             p1 = new Player(true);
             croupier = new Croupier(false);
+            joueurEnCours = p1;
         } else {
             p1 = new Player(false);
             croupier = new Croupier(true);
+            joueurEnCours = p1; // pour le test on commence toujours avec P1 pour l'instant
         }
 
         // Création du jeu de cartes
@@ -35,7 +44,7 @@ public final class Tarouket {
         riviere = new ArrayList<>();
     }
 
-    //Squelette du jeu
+    //Squelette d'un manche
     public void run() {
         do {
             this.jouerUneMain(); // A la fin de la main on regarde si la partie est terminée
@@ -44,54 +53,98 @@ public final class Tarouket {
         this.theEnd();
     }
     
-    public void alternerPremierJoueur() {
+    private void alternerPremierJoueur() {
         p1.changePaire();
-        croupier.changePaire();
+        joueurEnCours = p1.isPaire() ? p1 : croupier;
     }
 
     private void jouerUneMain() {
         distributionCartes();
-        vue.afficher2("Mise du Croupier : " + croupier.getMise());
-        vue.afficher2(p1.toString());
         petiteBlinde();
 
-        EtatManche etat = tourDeParole(p1); // renvoie le gagnant si coucher, sinon null
-        if (etat == EtatManche.COUCHER) {
-            return; // on évalue la condition de fin de partie
+        int[] phases = {PRE_FLOP, FLOP, TURN, RIVER};
+
+        for (int nbCartes : phases) {
+            if (nbCartes > PRE_FLOP) {
+                peuplerRiviere(nbCartes);
+                vue.afficher2(riviere.toString());
+            }
+            if (jouerTourEncheres() == ResultatTour.ABANDON) {
+                return;
+            }
         }
 
 
-
-        // sinon on continue : flop, turn, river...
+        comparerDeuxMains();
     }
 
-    private EtatManche tourDeParole(Player p) {
-        EtatManche etat = joueur.demanderChoix(vue);
-        
-        switch (etat) {
-            case COUCHER -> joueur.seCoucher();
-            case AVANT   -> joueur.allerDeLavant();
-            case CHECK   -> { /* rien à faire */ }
+    private ResultatTour jouerTourEncheres() {
+        Player premier = joueurEnCours;
+        Player second  = autreJoueur(premier);
+
+        if (jouerAction(premier) == Choix.COUCHER) return ResultatTour.ABANDON;
+        if (jouerAction(second)  == Choix.COUCHER) return ResultatTour.ABANDON;
+
+        mettreAJourEnAvant();
+        return ResultatTour.CONTINUE;
+    }
+
+    private Choix jouerAction(Player joueur) {
+        Choix choix = joueur.demanderChoix(vue);
+        if (choix == Choix.TAPIS) {
+            limiteTapis = true;
         }
-        return etat;
+        if (choix != Choix.COUCHER) {
+            appliquerChoix(joueur, choix);
+        }
+        return choix;
+    }
+
+    private void appliquerChoix(Player joueur, Choix choix) {
+        switch(choix) {
+            case CHECK -> {
+                // rien à faire
+            }
+            case AVANT -> {
+                joueur.allerDeLavant(vue, this);
+            }
+            case TAPIS -> {
+                joueur.faireTapis(vue, this);
+            }
+            default -> throw new IllegalStateException("Execution appliquerChoix() impossible : " + choix); //ne sera jamais exécuté
+        }
+    }
+
+    private void mettreAJourEnAvant() {
+        if (p1.totalDuPot() > croupier.totalDuPot()) {
+            enAvant = p1;
+        } else if (p1.totalDuPot() < croupier.totalDuPot()) {
+            enAvant = croupier;
+        } else {
+            enAvant = null;
+        }
+    }
+
+    private Player autreJoueur(Player joueur) {
+        return joueur == p1 ? croupier : p1;
     }
 
     // Tirage a pile ou face
     public boolean pileOuFace() {
         String choix = vue.demanderChoix("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ", "PILE", "FACE");
-        String coin = croupier.coinToss();
+        String coin = Croupier.coinToss();
         if(coin.equals(choix)) {
             vue.afficher("\nCroupier : Gagné ! tu auras le petit bout\n");
-            // vue.afficher("Croupier : Et c'est moi qui Deal");
+            // vue.afficher("Croupier : Et c'est moi qui commence");
             return true;
         } else {
             vue.afficher("\nCroupier : Perdu ! ton adversaire aura le petit bout\n");
-            // vue.afficher("Croupier : Mais c'est toi qui Deal");
+            // vue.afficher("Croupier : Mais c'est toi qui commence");
             return false;
         }
     }
 
-    // distribution des cartes aux joueureuses
+    // distribution de 2 cartes à p1 et croupier
     public void distributionCartes() {
         vue.afficher("Croupier : Tarouket !\n\n");
         p1.setCartes(deck.drawRandomCard(), deck.drawRandomCard());
@@ -106,11 +159,17 @@ public final class Tarouket {
 
     // Mise automatique de la petite Blinde
     public void petiteBlinde() {
+        // affichage des mises avant la petite blind
+        vue.afficher2("Mise du Croupier : " + croupier.getMise());
+        vue.afficher2(p1.toString());
         vue.exigerOui("Croupier : Vous devez miser la petite blinde. Tu veux miser oui ou non ? ");
         vue.clearScreen();
+        // ils effectuent la petite blind
         p1.petiteBlinde();
         croupier.petiteBlinde();
+        // on affiche le pot des joueurs
         vue.afficherPots(p1, croupier);
+        // on affiche la main et le pot de p1
         vue.afficher2(p1.toString());
     }
 

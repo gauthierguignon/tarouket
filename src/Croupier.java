@@ -20,8 +20,9 @@ public class Croupier extends Player {
         return output;
     }
 
-    public String coinToss() {
-        boolean bool = this.rand.nextBoolean();
+    public static String coinToss() {
+        Random rand = new Random();
+        boolean bool = rand.nextBoolean();
         String rez;
         if(bool) {
             rez = "PILE";
@@ -32,20 +33,20 @@ public class Croupier extends Player {
     }
 
     @Override
-    public EtatManche preFlop(Vue vue) {
+    public Choix demanderChoix(Vue vue) {
         int alea = rand.nextInt(100); // de 0 à 99
         if (alea < 45) {
-            vue.croupierParleRandom("\nCoupier : Je checke !"); 
-            return EtatManche.CHECK;
-        } else if (alea >= 45 && alea < 90) {
+            vue.croupierParleRandom("\nJe checke !"); 
+            return Choix.CHECK;
+        } else if (alea >= 45 && alea < 95) {
             vue.croupierParleRandom("Je vais de l'avant !");
-            return EtatManche.AVANT;
-        } else if (alea >= 95 && alea <= 99) {
+            return Choix.AVANT;
+        } else if (alea >= 95 && alea < 98) {
             vue.croupierParleRandom("Je me couche");
-            return EtatManche.TAPIS;
+            return Choix.TAPIS;
         } else {
             vue.croupierParleRandom("Je fais tapis !");
-            return EtatManche.COUCHER;
+            return Choix.COUCHER;
         }
     }
 
