@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Mise {
     
-    private final boolean paire;
+    private boolean paire;
     private ArrayList<Integer> mise;
 
     public Mise(boolean paire) {
@@ -86,6 +86,10 @@ public class Mise {
 
     public boolean isPaire() {
         return this.paire;
+    }
+
+    public void changePaire() {
+        this.paire = !paire;
     }
 
 }
