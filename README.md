@@ -104,96 +104,96 @@ Le Tarouket se joue à **jeu ouvert** : à chaque fin de main non interrompue pa
 
 Les mains sont départagées selon les combinaisons classiques du poker. Il n'y a pas de système de points à calculer, à une exception : **l'As vaut 1 point**, comme au tarot (et non une valeur haute comme au poker classique), ce qui peut influer sur le classement des suites et des combinaisons impliquant l'As. De même, au poker les cartes cavaliers n'existent pas.
 
-# Exemples de mains
+## 9. Exemples de mains
 Disons que J1 est toujours celui qui parle en premier dans ces exemples.
 
-# Exemple 1 :
-Mise de la petite blind.
---préflop--
-J1 mise
-J2 check
---fin de la mise--
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il pourra tenter un bon débarras au tour suivant. 
---révélation du flop--
-J1 mise et fait un bon débarras
-Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
-J2 est obligé de suivre ou de dépasser le pot de P1
-...
+### Exemple 1 :
++ Mise de la petite blind.
++ --préflop--
++ J1 mise
++ J2 check
++ --fin de la mise--
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il pourra tenter un bon débarras au tour suivant. 
++ --révélation du flop--
++ J1 mise et fait un bon débarras
++ Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
++ J2 est obligé de suivre ou de dépasser le pot de P1
++ ...
 
-# Exemple 2 : 
-Mise de la petite blind
---préflop--
-J1 check
-J2 mise
--- fin de la mise--
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il pourra tenter un bon débarras au tour suivant.
---révélation du flop--
-J1 check
-J2 mise
-Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
-J1 doit égaliser ou dépasser le pot de J2
-...
+### Exemple 2 : 
++ Mise de la petite blind
++ --préflop--
++ J1 check
++ J2 mise
++ -- fin de la mise--
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il pourra tenter un bon débarras au tour suivant.
++ --révélation du flop--
++ J1 check
++ J2 mise
++ Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
++ J1 doit égaliser ou dépasser le pot de J2
++ ...
 
-# Exemple 3 : 
-Mise de la petite blind
---préflop--
-J1 check
-J2 mise
--- fin de la mise--
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il pourra tenter un bon débarras au tour suivant.
---révélation du flop--
-J1 mise et dépasse le pot de J2
-J2 mise et dépasse le pot de J1
-Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
-J1 doit égaliser ou dépasser le pot de J2
+### Exemple 3 : 
++ Mise de la petite blind
++ --préflop--
++ J1 check
++ J2 mise
++ -- fin de la mise--
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il pourra tenter un bon débarras au tour suivant.
++ --révélation du flop--
++ J1 mise et dépasse le pot de J2
++ J2 mise et dépasse le pot de J1
++ Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? oui : c'est un "bon débarras".
++ J1 doit égaliser ou dépasser le pot de J2
 
-# Exemple 4 : 
-Mise de la petite blind
---préflop--
-J1 check
-J2 mise
--- fin de la mise--
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il peut faire un bon débarras au tour suivant.
---révélation du flop--
-J1 mise et dépasse le pot de J2
-J2 check
-Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? non. J2 ne pourra pas faire de bon débarras au tour suivant car il faut avoir fait un "en avant" au tour précédent. 
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il pourra tenter un bon débarras au tour suivant.
+### Exemple 4 : 
++ Mise de la petite blind
++ --préflop--
++ J1 check
++ J2 mise
++ -- fin de la mise--
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J2 va de l'avant. il peut faire un bon débarras au tour suivant.
++ --révélation du flop--
++ J1 mise et dépasse le pot de J2
++ J2 check
++ Est-ce qu'un le pot de d'un joueur a été deux fois consécutif plus haut que le pot de l'autre joueur ? non. J2 ne pourra pas faire de bon débarras au tour suivant car il faut avoir fait un "en avant" au + tour précédent.
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il pourra tenter un bon débarras au tour suivant.
 
-# Exemple 5 : 
-Mise de la petite blind
---préflop--
-J1 mise
-J2 mise mais moins que J1
--- fin de la mise--
-Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il peut faire un bon débarras au tour suivant.
+### Exemple 5 : 
++ Mise de la petite blind
++ --préflop--
++ J1 mise
++ J2 mise mais moins que J1
++ -- fin de la mise--
++ Est-ce qu'un un joueur à un pot supérieur à l'autre ? oui : J1 va de l'avant. il peut faire un bon débarras au tour suivant.
 
-# Exemple 6 :
-Mise de la petite blind
---préflop--
-J1 mise
-J2 mise et égalise le pot de J1
--- fin de la mise--
-Est-ce qu'un joueur à un pot supérieur à l'autre ? non. Pas de "en avant" ici
+### Exemple 6 :
++ Mise de la petite blind
++ --préflop--
++ J1 mise
++ J2 mise et égalise le pot de J1
++ -- fin de la mise--
++ Est-ce qu'un joueur à un pot supérieur à l'autre ? non. Pas de "en avant" ici
 
-# Exemple 7 : 
-Mise de la petite blind
---préflop--
-J1 check
-J2 check
--- fin de la mise--
-Est-ce qu'un joueur à un pot supérieur à l'autre ? non. Pas de "en avant" ici
-On révèle le flop
+### Exemple 7 : 
++ Mise de la petite blind
++ --préflop--
++ J1 check
++ J2 check
++ -- fin de la mise--
++ Est-ce qu'un joueur à un pot supérieur à l'autre ? non. Pas de "en avant" ici
++ On révèle le flop
 
-# Exemple 8 :
-Mise de la petite blind
---préflop--
-J1 check
-J2 mise
-Est-ce qu'un joueur à un pot supérieur à l'autre ? oui. J2 est "en avant" ici
---révélation du flop--
-J1 mise et égalise le pot de J2
-**--> J2 n'est plus en avant**
-J2 mise et dépasse le pot de J1
-Est-ce qu'un joueur à un pot supérieur à l'autre ? oui. J2 est "en avant" ici
-...
+### Exemple 8 :
++ Mise de la petite blind
++ --préflop--
++ J1 check
++ J2 mise
++ Est-ce qu'un joueur à un pot supérieur à l'autre ? oui. J2 est "en avant" ici
++ --révélation du flop--
++ J1 mise et égalise le pot de J2
++ **--> J2 n'est plus en avant**
++ J2 mise et dépasse le pot de J1
++ Est-ce qu'un joueur à un pot supérieur à l'autre ? oui. J2 est "en avant" ici
++ ...
