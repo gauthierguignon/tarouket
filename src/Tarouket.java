@@ -14,7 +14,8 @@ public final class Tarouket {
     private final Random rand;
     private Player joueurEnCours;
     private Player enAvant;
-    private boolean limiteTapis;
+    private int toursConsecutifsEnAvant;
+    private Player nePeutPasSeCoucher; 
 
     private final int PRE_FLOP = 0;
     private final int FLOP = 3;
@@ -90,6 +91,7 @@ public final class Tarouket {
                     return;
                 }
             }
+            mettreAJourEnAvant();
         }
         comparerDeuxMains();
         finDeMain();
@@ -147,12 +149,23 @@ public final class Tarouket {
     }
 
     private void mettreAJourEnAvant() {
+        Player nouveauEnAvant;
+
         if (p1.totalDuPot() > croupier.totalDuPot()) {
-            enAvant = p1;
+            nouveauEnAvant = p1;
         } else if (p1.totalDuPot() < croupier.totalDuPot()) {
-            enAvant = croupier;
+            nouveauEnAvant = croupier;
         } else {
-            enAvant = null;
+            nouveauEnAvant = null;
+        }
+
+        if(nouveauEnAvant == enAvant) {
+            if(enAvant != null) {
+                toursConsecutifsEnAvant++;
+            }
+        } else {
+            enAvant = nouveauEnAvant;
+            toursConsecutifsEnAvant = (enAvant == null) ? 0 : 1;
         }
     }
 

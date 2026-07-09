@@ -136,7 +136,6 @@ public class Player {
     public Choix allerDeLavant(Vue vue, Tarouket tarouket) {
 
         // Premier tour
-        boolean tapis = false;
         String choix = vue.demanderChoix("\nCroupier : Tu veux relancer (1) ou faire tapis (2) ?", "1", "2");
 
         switch (choix) {
@@ -145,14 +144,12 @@ public class Player {
             }
             case "2" -> {
                 this.faireTapis(vue, tarouket);
-                tapis = true;
                 return Choix.TAPIS;
             }
         }
 
         int counter = 2;
         // Tours suivants sauf si tapis
-        if(!tapis) {
             do {
                 String prompt = "\nCroupier : Tu veux relancer une " + counter + "e fois (oui) ou tu t'arrêtes là (non) ?";
                 choix = vue.demanderChoix(prompt, "oui", "non");
@@ -165,7 +162,6 @@ public class Player {
                     vue.afficher2("\nVous : Je m'arrête là.\n");
                 }
             } while (!choix.equals("NON"));
-        }
         return Choix.AVANT;
     }
 
