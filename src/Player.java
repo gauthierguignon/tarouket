@@ -32,6 +32,10 @@ public class Player {
         this.pot.add(valeur);
         this.mise.remove(valeur);
     }
+    
+    public void ajouterAuPot(Collection<Integer> valeurs) {
+        this.pot.addAll(valeurs);
+    }
 
     public String potToString() {
         String output = "Votre pot est de " + ": ";
@@ -78,10 +82,6 @@ public class Player {
         cartes[1] = c2;
     }
 
-    public void ajouterAuPot(Collection<Integer> valeurs) {
-        this.pot.addAll(valeurs);
-    }
-
     // adversaire perd son pot et tout retourne dans la Mise de Player
     public void recupererPots(Player adversaire) {
         this.getMise().addAll(adversaire.getPot());
@@ -119,20 +119,17 @@ public class Player {
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
     }
 
-    public void seCoucher(Vue vue, Croupier croupier) {
+    public void seCoucher(Vue vue, Player croupier) {
         vue.croupierParleRandom("Eh ben mon coco ! T'es pas un aventurier toi ... ", 
             "Ah ouais ?! Pas très courageux.",
-            "Tu l'as joues sur le long terme. Tu as raison !",
+            "Tu la joues sur le long terme. Tu as raison !",
             "Faudrait peut-être jouer un jour, nan ?",
             "On se demande bien qui va gagner",
             "Chacun sa technique"
         );
         vue.afficher2("Le croupier avait en main : " + Arrays.toString(croupier.getCartes()));
-        vue.croupierParleRandom("C'est la fin du tour ! Je redistribue les cartes.");
-        vue.exigerOui("Tu es prêt ? (oui)");
+        vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
-        vue.afficher2("Croupier : Nouvelle manche ! ");
-        
         croupier.recupererPots(this);
     }
 

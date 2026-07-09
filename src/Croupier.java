@@ -36,7 +36,7 @@ public class Croupier extends Player {
     public Choix demanderChoix(Vue vue) {
         int alea = rand.nextInt(100); // de 0 à 99
         if (alea < 45) {
-            vue.croupierParleRandom("\nJe checke !"); 
+            vue.croupierParleRandom("Je checke !"); 
             return Choix.CHECK;
         } else if (alea >= 45 && alea < 95) {
             vue.croupierParleRandom("Je vais de l'avant !");

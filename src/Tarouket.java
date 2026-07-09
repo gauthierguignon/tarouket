@@ -44,10 +44,9 @@ public final class Tarouket {
         riviere = new ArrayList<>();
     }
 
-    //Squelette d'un manche
     public void run() {
         do {
-            this.jouerUneMain(); // A la fin de la main on regarde si la partie est terminée
+            this.jouerUneMain();
             this.alternerPremierJoueur();          
         } while (!this.finDePartie());
         this.theEnd();
@@ -71,11 +70,10 @@ public final class Tarouket {
             }
             if (jouerTourEncheres() == ResultatTour.ABANDON) {
                 return;
-            }
+            } // Si un joueur se couche on ne compare pas les mains
         }
-
-
         comparerDeuxMains();
+        finDeManche();
     }
 
     private ResultatTour jouerTourEncheres() {
@@ -94,9 +92,7 @@ public final class Tarouket {
         if (choix == Choix.TAPIS) {
             limiteTapis = true;
         }
-        if (choix != Choix.COUCHER) {
-            appliquerChoix(joueur, choix);
-        }
+        appliquerChoix(joueur, choix);
         return choix;
     }
 
@@ -104,6 +100,9 @@ public final class Tarouket {
         switch(choix) {
             case CHECK -> {
                 // rien à faire
+            }
+            case COUCHER -> {
+                joueur.seCoucher(vue, autreJoueur(joueur));
             }
             case AVANT -> {
                 joueur.allerDeLavant(vue, this);
@@ -232,9 +231,11 @@ public final class Tarouket {
         EvaluateurMain evalP1 = new EvaluateurMain(mainCompleteP1);
         EvaluateurMain evalCroupier = new EvaluateurMain(mainCompleteCroupier);
 
+        boolean afficherHauteur = evalP1.meilleureCombinaison() == evalCroupier.meilleureCombinaison();
+
         vue.afficher2("Rivière : \t" + this.riviere);
-        vue.afficher2("Votre main : \t" + Arrays.toString(p1.getCartes()));
-        vue.afficher2("Main du Croupier : \t" +  Arrays.toString(croupier.getCartes()));
+        vue.afficher2("Votre main : \t" + Arrays.toString(p1.getCartes()) + " " + evalP1.description(afficherHauteur));
+        vue.afficher2("Main du Croupier : \t" +  Arrays.toString(croupier.getCartes()) + " " + evalCroupier.description(afficherHauteur));
 
         if(evalP1.score() > evalCroupier.score()) {
             vue.afficher2("Tu GAGNES avec " + evalP1.meilleuresCartes(evalP1.meilleureCombinaison()));
@@ -260,7 +261,16 @@ public final class Tarouket {
         return croupier;
     }
 
-    
+    public void finDeManche() {
+        vue.croupierParleRandom("C'est la fin du tour ! Je redistribue les cartes.");
+        vue.exigerOui("Tu es prêt ? (oui)");
+        vue.clearScreen();
+        if(!finDePartie()) {
+            vue.afficher2("Croupier : Nouvelle manche ! ");
+        }
+    }
+
+
     // test
     // Pour lancer ce test il faut désactiver l'afficahe du vue 
     // sinon ça prend trop de temps à chaque essai

@@ -107,7 +107,7 @@ public class Vue {
     public void croupierParleRandom(String... phrases) {
         Random rand = new Random();
         int index = rand.nextInt(phrases.length);
-        this.afficher("\nCroupier : " + phrases[index]);
+        this.afficher2("\nCroupier : " + phrases[index]);
     }
 
     public void wait(int temps) {
