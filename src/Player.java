@@ -65,7 +65,7 @@ public class Player {
         return counter;
     }
 
-    public ArrayList<Integer> getPot() {
+    protected ArrayList<Integer> getPot() {
         return this.pot;
     }
 
@@ -104,15 +104,15 @@ public class Player {
 
             switch(choix) {
                 case "1" -> {
-                    vue.afficher2("\nVous : Je checke !"); 
+                    vue.afficher2("Vous : Je checke !"); 
                     return Choix.CHECK;
                 }
                 case "2" -> {
-                    vue.afficher2("Vous : Je vais de l'avant.");
+                    vue.afficher2("Vous : Je vais de l'avant !");
                         return Choix.AVANT;
                     }
                 case "3" -> {
-                    vue.afficher2("Vous : Je me couche");
+                    vue.afficher2("Vous : Je me couche !");
                     return Choix.COUCHER;
                 }
             }
@@ -188,7 +188,6 @@ public class Player {
 
         vue.croupierParleRandom("Tonnere de Brest !", "Nom d'un pilon vermoulu !");
         vue.croupierParleRandom("Tu fais tapis !");
-        vue.croupierParleRandom("Petit rappel, quand on fait tapis on ne considère que le flop. Capiche ?");
         
         // Ajouter au pot toute la mise
         this.ajouterAuPot(this.getMise().getMise());

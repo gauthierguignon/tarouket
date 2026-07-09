@@ -19,7 +19,6 @@ public class Mise {
         }
     }
 
-    // Dégager le getMise et mettre l'attribut en private ! 
     public Integer getMise(int i) {
         return this.mise.get(i);
     }
