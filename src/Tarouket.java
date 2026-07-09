@@ -75,10 +75,21 @@ public final class Tarouket {
                 peuplerRiviere(nbCartes);
                 vue.afficher2(riviere.toString());
             }
-            if (jouerTourEncheres() == ResultatTour.ABANDON) {
-                finDeMain();
-                return;
-            } // Si un joueur se couche on ne compare pas les mains
+            ResultatTour rez = jouerTourEncheres();
+            switch (rez) {
+                case ABANDON -> {
+                    // Si un joueur se couche on ne compare pas les mains
+                    finDeMain();
+                    return;
+                }
+                case QUICKSTOP -> {
+                    // Si un joueur à fait tapis on compare tout de suite les mains
+                    troisCartesDansLaRiviere();
+                    comparerDeuxMains();
+                    finDeMain();
+                    return;
+                }
+            }
         }
         comparerDeuxMains();
         finDeMain();
@@ -88,8 +99,15 @@ public final class Tarouket {
         Player premier = joueurEnCours;
         Player second  = autreJoueur(premier);
 
-        if (jouerAction(premier) == Choix.COUCHER) return ResultatTour.ABANDON;
-        if (jouerAction(second)  == Choix.COUCHER) return ResultatTour.ABANDON;
+        Choix choixPremier = jouerAction(premier);
+        if (choixPremier == Choix.COUCHER) return ResultatTour.ABANDON;
+
+        Choix choixSecond = jouerAction(second);
+        if (choixSecond == Choix.COUCHER) return ResultatTour.ABANDON;
+
+        if (choixPremier == Choix.TAPIS || choixSecond == Choix.TAPIS) {
+            return ResultatTour.QUICKSTOP;
+        }
 
         mettreAJourEnAvant();
         return ResultatTour.CONTINUE;
@@ -97,22 +115,34 @@ public final class Tarouket {
 
     private Choix jouerAction(Player joueur) {
         Choix choix = joueur.demanderChoix(vue); 
-        appliquerChoix(joueur, choix);
+        choix = appliquerChoix(joueur, choix);
         return choix;
     }
 
-    private void appliquerChoix(Player joueur, Choix choix) {
+    private Choix appliquerChoix(Player joueur, Choix choix) {
         switch(choix) {
             case CHECK -> {
                 // rien à faire
+                return choix;
             }
             case COUCHER -> {
                 joueur.seCoucher(vue, autreJoueur(joueur));
+                return choix;
             }
             case AVANT -> {
-                joueur.allerDeLavant(vue, this);
+                choix = joueur.allerDeLavant(vue, this); // TAPIS ou AVANT
+                return choix;
             }
             default -> throw new IllegalStateException("Execution appliquerChoix() impossible : " + choix); //ne sera jamais exécuté
+        }
+    }
+
+    private void troisCartesDansLaRiviere() {
+        vue.croupierParleRandom("Dans le cas d'un tapis on ne considère que le flop ! (les 3 premières cartes)");
+        if (riviere.size() > 3) {
+            riviere.subList(3, riviere.size()).clear();
+        } else if (riviere.size() < 3) {
+            peuplerRiviere(FLOP);
         }
     }
 

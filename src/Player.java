@@ -133,7 +133,7 @@ public class Player {
         croupier.recupererPots(this);
     }
 
-    public void allerDeLavant(Vue vue, Tarouket tarouket) {
+    public Choix allerDeLavant(Vue vue, Tarouket tarouket) {
 
         // Premier tour
         boolean tapis = false;
@@ -146,6 +146,7 @@ public class Player {
             case "2" -> {
                 this.faireTapis(vue, tarouket);
                 tapis = true;
+                return Choix.TAPIS;
             }
         }
 
@@ -165,6 +166,7 @@ public class Player {
                 }
             } while (!choix.equals("NON"));
         }
+        return Choix.AVANT;
     }
 
     public void relancer(Vue vue, Tarouket tarouket) {

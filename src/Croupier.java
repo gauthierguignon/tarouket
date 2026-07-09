@@ -62,17 +62,19 @@ public class Croupier extends Player {
     }
 
     @Override
-    public void allerDeLavant(Vue vue, Tarouket tarouket) {
+    public Choix allerDeLavant(Vue vue, Tarouket tarouket) {
         // Est-ce que le croupier mise ou fait tapis
         int alea = rand.nextInt(100);
         if(alea < 95) {
             this.relancer(vue, tarouket);
+            return Choix.AVANT;
             // plus tard ajouter la possiblité de miser plusieurs atouts à la relance
             // if(alea > 70) {
             // int n = rand.nextInt();
             // relancer(n, vue, tarouket) ...
         } else {
             this.faireTapis(vue, tarouket);
+            return Choix.TAPIS;
         }
     }
 
@@ -105,12 +107,13 @@ public class Croupier extends Player {
         vue.afficherPots(tarouket.getPlayer(), this);
     }
 
+    @Override
     public void seCoucher(Vue vue, Player croupier) {
         vue.croupierParleRandom("Pas besoin des prendre des risques",
         "Je joue intelligemment moi !",
-        "Il faut de la sagesse pour abonner une main."
+        "Il faut de la sagesse pour abandonner une main."
         );
-        vue.afficher2("Le croupier avait en main : " + Arrays.toString(croupier.getCartes()));
+        vue.afficher2("Croupier : J'avais en main " + Arrays.toString(croupier.getCartes()));
         vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
         croupier.recupererPots(this);
