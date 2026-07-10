@@ -1,6 +1,9 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Croupier extends Player {
@@ -47,7 +50,7 @@ public class Croupier extends Player {
     }
 
     @Override
-    public Choix demanderChoix(Vue vue) {
+    public Choix demanderChoix(Vue vue, Tarouket tarouket) {
         int alea = rand.nextInt(100); // de 0 à 99
         if (alea < 45) {
             vue.croupierParleRandom("Je checke !"); 
@@ -56,9 +59,108 @@ public class Croupier extends Player {
             vue.croupierParleRandom("Je vais de l'avant !");
             return Choix.AVANT;
         } else {
+            if(this == tarouket.getNePeutPasSeCoucher()) {
+                vue.croupierParleRandom("Bon bas ... j'ai pas le choix. Je dois au moins égaliser ton pot.");
+                return Choix.BON_DEBARRAS;
+            }
             vue.croupierParleRandom("Je me couche");
             return Choix.COUCHER;
         }
+    }
+
+    private boolean chercherUneCarte(int objectif, List<Integer> cartes) {
+        if(cartes.contains(objectif)) {
+            this.ajouterAuPot(objectif);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean chercherDeuxCartes(int objectif, List<Integer> cartes) {
+        // s'il existe 2 cartes qui atteignent ou dépassent l'objectif
+        // on prend les 2 cartes qui ont le plus petit dépassement
+
+        int meilleuredepassement = Integer.MAX_VALUE;
+        int depassement;
+        int carte1 = -1;
+        int carte2 = -1;
+
+
+        for (int i = 0; i < cartes.size(); i++) {
+            for (int j = i + 1; j < cartes.size(); j++) {
+                int somme = cartes.get(i) + cartes.get(j);
+                if(somme >= objectif) {
+                    depassement = somme - objectif;
+                    if(depassement < meilleuredepassement) {
+                        carte1 = i;
+                        carte2 = j;
+                        meilleuredepassement = depassement;
+                    }
+                }
+            }
+        }
+        if(carte1 != -1) {
+            this.ajouterAuPot(cartes.get(carte1));
+            this.ajouterAuPot(cartes.get(carte2));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean chercherCombinaison (int objectif, List<Integer> cartes) {
+        // Si on ne peut pas atteindre l'objectif avec 1 ou 2 cartes
+        // Alors on prend la carte la plus haute et on ajoute des cartes faibles
+        // jusqu'à atteindre ou dépasser l'objectif
+        // on renvoie la meilleure combinaison si elle existe
+        // C'est pas parfait mais c'est ce que ferait un humain
+
+        int meilleuredepassement = Integer.MAX_VALUE;
+        List<Integer> meilleureCombinaison = new ArrayList<>();
+        int totalMeilleurCombinaison = 0;
+
+        for (int i = 1; i < cartes.size(); i++) {
+            List<Integer> combinaison = new ArrayList<>();
+            int indexGrosse = cartes.size() - i;
+            int carteGrosse = cartes.get(indexGrosse);
+            combinaison.add(carteGrosse);
+            int totalCombinaison = carteGrosse;
+
+            for (int j = 0; j < cartes.size(); j++) {
+                if (j == indexGrosse) continue;
+                int carte = cartes.get(j);
+                combinaison.add(carte);
+                totalCombinaison += carte;
+                if (totalCombinaison >= objectif) break;
+            }
+
+            int depassement = totalCombinaison - objectif;
+            if (totalCombinaison >= objectif && depassement < meilleuredepassement) {
+                meilleuredepassement = depassement;
+                meilleureCombinaison = new ArrayList<>(combinaison);
+                totalMeilleurCombinaison = totalCombinaison;
+
+                if (meilleuredepassement == 0) break; // impossible de faire mieux
+            }
+        }
+
+        if (totalMeilleurCombinaison < objectif) {
+            return false;
+        }
+        this.ajouterAuPot(meilleureCombinaison);
+        return true;
+    }
+
+    @Override
+    public Choix bonDebarras(Vue vue, Tarouket tarouket) {
+
+        int objectif = tarouket.getPlayer().totalDuPot() - this.totalDuPot();
+        List<Integer> cartes = this.getMise().getMise();
+        Collections.sort(cartes);
+
+        if(chercherUneCarte(objectif, cartes)) return Choix.AVANT;
+        if(chercherDeuxCartes(objectif, cartes)) return Choix.AVANT;
+        if(chercherCombinaison(objectif, cartes)) return Choix.AVANT;
+        return Choix.TAPIS;
     }
 
     @Override
@@ -118,14 +220,6 @@ public class Croupier extends Player {
         vue.clearScreen();
         croupier.recupererPots(this);
     }
-
-
-    public static void main(String[] args) {
-        // mettre le vue du tarouket en public
-            Tarouket tarouket = new Tarouket();
-            tarouket.getCroupier().relancer(tarouket.vue, tarouket);
-    }
-
 
 
 }

@@ -92,6 +92,8 @@ Un **bon débarras** se déclenche quand un joueur est **"en avant" à deux tour
 
 **Rupture du streak :** si à la fin d'un tour d'enchères le statut "en avant" change de joueur (ou disparaît parce que les pots sont égalisés), le compteur de tours consécutifs repart à zéro pour le nouveau joueur "en avant" (il ne compte alors que depuis ce tour-là). Toute égalisation du pot, à n'importe quel moment de la main, remet le compteur à zéro. Cf exemple 8. 
 
+**Impossibilité d'égaliser:** si le joueur visé par un bon débarras ne possède pas assez d'atouts pour égaliser (ou dépasser) le pot du joueur en avant, il est contraint de faire tapis avec tout ce qu'il lui reste. Les atouts déjà misés par l'adversaire au-delà de ce total restent engagés dans le pot. La main se conclut alors selon la règle du tapis (§7) : seul le flop est pris en compte à l'abattage.
+
 ## 7. Le tapis
 
 Si un joueur mise tapis (la totalité de ses atouts restants, ou son dernier atout), **seules les 3 premières cartes communes (le flop) sont prises en compte** pour comparer les mains à l'abattage — même si le turn et la river ont déjà été révélés à ce moment de la main. Pour rappel, il n'est jamais obligatoire de suivre au tarouket, sauf dans le cas d'un bon débarras. Cette règle vaut pour le tapis.

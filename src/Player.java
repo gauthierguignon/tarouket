@@ -34,7 +34,10 @@ public class Player {
     }
     
     public void ajouterAuPot(Collection<Integer> valeurs) {
+        // Ajouter au pot toutes les valeurs de la mise
         this.pot.addAll(valeurs);
+        // Vider la mise du joueur
+        this.getMise().clear();
     }
 
     public String potToString() {
@@ -99,8 +102,17 @@ public class Player {
         return this.mise.isPaire();
     }
 
-    public Choix demanderChoix(Vue vue) {
-            String choix = vue.demanderChoix("Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)", "1", "2", "3");
+    public Choix demanderChoix(Vue vue, Tarouket tarouket) {
+
+        String question = "Croupier : Tu peux checker (1), aller de l'avant (2)";
+        String choix;
+
+        if(this == tarouket.getNePeutPasSeCoucher()) {
+            choix = vue.demanderChoix(question,"1", "2");
+        } else {
+            question += " ou te coucher(3)";
+            choix = vue.demanderChoix(question, "1", "2", "3");
+        }
 
             switch(choix) {
                 case "1" -> {
@@ -189,12 +201,15 @@ public class Player {
         
         // Ajouter au pot toute la mise
         this.ajouterAuPot(this.getMise().getMise());
-        // Vider la mise du joueur
-        this.getMise().clear();
 
         vue.afficherPots(this, tarouket.getCroupier());
         vue.afficher2(this.toString());
     }
 
+    public Choix bonDebarras(Vue vue, Tarouket tarouket) {
+        // le joueur peut être forcé de faire tapis
+        // donc faut retourner le bon choix
+        return null;
+    }
 
 }

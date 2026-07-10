@@ -6,7 +6,7 @@ import java.util.Random;
 
 public final class Tarouket {
 
-    public final Vue vue;
+    private final Vue vue;
     private final Player p1;
     private final Croupier croupier;
     private final Deck deck;
@@ -15,7 +15,7 @@ public final class Tarouket {
     private Player joueurEnCours;
     private Player enAvant;
     private int toursConsecutifsEnAvant;
-    private Player nePeutPasSeCoucher; 
+    private Player nePeutPasSeCoucher;
 
     private final int PRE_FLOP = 0;
     private final int FLOP = 3;
@@ -63,6 +63,10 @@ public final class Tarouket {
     private void alternerPremierJoueur() {
         p1.changePaire();
         joueurEnCours = p1.isPaire() ? p1 : croupier;
+    }
+
+    public Player getNePeutPasSeCoucher() {
+        return this.nePeutPasSeCoucher;
     }
 
     private void jouerUneMain() {
@@ -116,7 +120,7 @@ public final class Tarouket {
     }
 
     private Choix jouerAction(Player joueur) {
-        Choix choix = joueur.demanderChoix(vue); 
+        Choix choix = joueur.demanderChoix(vue, this); 
         choix = appliquerChoix(joueur, choix);
         return choix;
     }
@@ -133,6 +137,10 @@ public final class Tarouket {
             }
             case AVANT -> {
                 choix = joueur.allerDeLavant(vue, this); // TAPIS ou AVANT
+                return choix;
+            }
+            case BON_DEBARRAS -> {
+                choix = joueur.bonDebarras(vue, this);
                 return choix;
             }
             default -> throw new IllegalStateException("Execution appliquerChoix() impossible : " + choix); //ne sera jamais exécuté
@@ -186,7 +194,6 @@ public final class Tarouket {
             return false;
         }
     }
-
     // distribution de 2 cartes à p1 et croupier
     private void distributionCartes() {
         vue.afficher("Croupier : Tarouket !\n\n");
@@ -198,7 +205,6 @@ public final class Tarouket {
         if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (croupier.totalDeMise() == 0 && croupier.totalDuPot() == 0)) return true;
         return false;
     }
-
     // Mise automatique de la petite Blinde
     private void petiteBlinde() {
         // affichage des mises avant la petite blind
