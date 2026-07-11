@@ -33,11 +33,17 @@ public class Player {
         this.mise.remove(valeur);
     }
     
-    public void ajouterAuPot(Collection<Integer> valeurs) {
+    public void ajouterAuPotTouteLaMise(Collection<Integer> valeurs) {
         // Ajouter au pot toutes les valeurs de la mise
         this.pot.addAll(valeurs);
         // Vider la mise du joueur
         this.getMise().clear();
+    }
+
+    public void ajouterAuPotList(Collection<Integer> valeurs){
+        for(Integer valeur : valeurs) {
+            ajouterAuPot(valeur);
+        }
     }
 
     public String potToString() {
@@ -107,7 +113,7 @@ public class Player {
         String question = "Croupier : C'est un bon débarras ! Tu doi au moins égaliser le pot adverse ! Appuie sur entrée ↵";
         String choix;
 
-        if(this == tarouket.getNePeutPasSeCoucher()) {
+        if(this == tarouket.getpotentielleVictime()) {
             choix = vue.demanderChoix(question,"");
         } else {
             question = "Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)";
@@ -204,7 +210,7 @@ public class Player {
         vue.croupierParleRandom("Tu fais tapis !");
         
         // Ajouter au pot toute la mise
-        this.ajouterAuPot(this.getMise().getMise());
+        this.ajouterAuPotTouteLaMise(this.getMise().getMise());
 
         vue.afficherPots(this, tarouket.getCroupier());
         vue.afficher2(this.toString());
@@ -225,7 +231,15 @@ public class Player {
             vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
             vue.afficher2(tarouket.getPlayer().toString());
         } while (this.totalDeMise() < tarouket.autreJoueur(this).totalDeMise());
+        // le bon debarras est effectué
+        // On remet les compteurs à zéro
+        tarouket.initBonDebarras();
         return Choix.AVANT;
     }
+
+    public String getNom() {
+        return "Joueur";
+    }
+
 
 }

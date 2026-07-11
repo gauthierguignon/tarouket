@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 public final class Tarouket {
@@ -15,12 +16,7 @@ public final class Tarouket {
     private Player joueurEnCours;
     private Player enAvant;
     private int toursConsecutifsEnAvant;
-    private Player nePeutPasSeCoucher;
-
-    private final int PRE_FLOP = 0;
-    private final int FLOP = 3;
-    private final int TURN = 1;
-    private final int RIVER = 1;
+    private Player potentielleVictime; // peut subir un bon débarras
 
     // Note pour plus tard : 
     // Avoir Croupier extends Player n'était pas une mauvaise idée
@@ -37,11 +33,11 @@ public final class Tarouket {
         if (!bool) {
             p1 = new Player(true);
             croupier = new Croupier(false);
-            joueurEnCours = p1;
+            joueurEnCours = p1; // la bonne valeur c'est p1 ici
         } else {
             p1 = new Player(false);
             croupier = new Croupier(true);
-            joueurEnCours = croupier; // pour le test on commence toujours avec P1 pour l'instant
+            joueurEnCours = croupier; // A changer pour les tests
         }
 
         // Création du jeu de cartes
@@ -65,23 +61,21 @@ public final class Tarouket {
         joueurEnCours = p1.isPaire() ? p1 : croupier;
     }
 
-    public Player getNePeutPasSeCoucher() {
-        return this.nePeutPasSeCoucher;
+    public Player getpotentielleVictime() {
+        return this.potentielleVictime;
     }
 
     private void jouerUneMain() {
         distributionCartes();
         petiteBlinde();
-        enAvant = null;
-        nePeutPasSeCoucher = null;
-        toursConsecutifsEnAvant = 0;
+        initBonDebarras();
 
-        int[] phases = {PRE_FLOP, FLOP, TURN, RIVER};
-
-        for (int nbCartes : phases) {
-            if (nbCartes > PRE_FLOP) {
-                peuplerRiviere(nbCartes);
-                vue.afficher2(riviere.toString());
+        for (Etats etat : Etats.values()) {
+            if (etat.getValeur() > Etats.PRE_FLOP.getValeur()) {
+                peuplerRiviere(etat.getValeur());
+                vue.afficher("Révélation " + etat.getNom() + " : ");
+                vue.afficherRiviere(riviere);
+                vue.afficher(p1.toString());
             }
             ResultatTour rez = jouerTourEncheres();
             switch (rez) {
@@ -91,7 +85,7 @@ public final class Tarouket {
                     return;
                 }
                 case QUICKSTOP -> {
-                    // Si un joueur à fait tapis on compare tout de suite les mains
+                    // Si un joueur fait tapis on compare tout de suite les mains
                     troisCartesDansLaRiviere();
                     comparerDeuxMains();
                     finDeMain();
@@ -113,7 +107,7 @@ public final class Tarouket {
         Choix choixSecond = jouerAction(second);
         if (choixSecond == Choix.COUCHER) return ResultatTour.ABANDON;
 
-        if(choixSecond == Choix.AVANT && premier == nePeutPasSeCoucher) {
+        if(second.totalDuPot()>premier.totalDuPot() && premier == potentielleVictime) {
             choixPremier = premier.bonDebarras(vue, this);
         }
 
@@ -124,6 +118,7 @@ public final class Tarouket {
         return ResultatTour.CONTINUE;
     }
 
+    // Renvoie le choix appliqué
     private Choix jouerAction(Player joueur) {
         Choix choix = joueur.demanderChoix(vue, this); 
         choix = appliquerChoix(joueur, choix);
@@ -157,7 +152,7 @@ public final class Tarouket {
         if (riviere.size() > 3) {
             riviere.subList(3, riviere.size()).clear();
         } else if (riviere.size() < 3) {
-            peuplerRiviere(FLOP);
+            peuplerRiviere(Etats.FLOP.getValeur());
         }
     }
 
@@ -170,6 +165,7 @@ public final class Tarouket {
             nouveauEnAvant = croupier;
         } else {
             nouveauEnAvant = null;
+            toursConsecutifsEnAvant = 0;
             return;
         }
 
@@ -180,7 +176,7 @@ public final class Tarouket {
             toursConsecutifsEnAvant = 1;
         }
 
-        nePeutPasSeCoucher = (toursConsecutifsEnAvant == 2) ? autreJoueur(enAvant) : null;
+        potentielleVictime = (toursConsecutifsEnAvant >= 2) ? autreJoueur(enAvant) : null;
     }
 
     public Player autreJoueur(Player joueur) {
@@ -327,6 +323,21 @@ public final class Tarouket {
         return croupier;
     }
 
+    public void initBonDebarras() {
+        enAvant = null;
+        potentielleVictime = null;
+        toursConsecutifsEnAvant = 0;
+    }
+
+    private void testSystem(Player p) {
+        // a utiliser dans jouerTourEncheres()
+        System.out.println("" + p.getNom()  + " A pris sa décision");
+        System.out.print("Joueur en Avant : ");
+        System.out.println(enAvant == null ? "null" : Objects.toString(enAvant.getNom(), "null"));
+        System.out.println("Tours consécutifs en avant : " + toursConsecutifsEnAvant);
+        System.out.print("La victime potentielle est : ");
+        System.out.println(potentielleVictime == null ? "null" : Objects.toString(potentielleVictime.getNom(), "null"));
+    }
 
     // test
     // Pour lancer ce test il faut désactiver l'afficahe du vue 

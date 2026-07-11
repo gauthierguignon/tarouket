@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -10,18 +11,6 @@ public class Vue {
     public Vue() {
         this.sc = new Scanner(System.in);
     }
-
-    public static void afficherTEST(String phrase) { 
-        for(int i = 0; i < phrase.length(); i++) {
-            System.out.print(phrase.charAt(i));
-            try {
-                Thread.sleep(30); //30
-            } catch (InterruptedException e) {}
-        }
-        System.out.print("\n");
-    }
-
-
 
     // Afichage dans le terminal '\n' x1
     public void afficher1(String phrase) { 
@@ -84,7 +73,7 @@ public class Vue {
         int valeur = -1;
         int counter = 0;
         do {
-            if (counter > 1) {
+            if (counter >= 1) {
                 afficher2("\nCroupier : Capitaine, zêtes bourré ou quoi ?! Faut miser les cartes dans ta Mise. Allez on recommence !");
             }
             afficher2("\nCroupier : Tu veux relancer de combien mon coco ?");
@@ -126,6 +115,10 @@ public class Vue {
         try {
             Thread.sleep(temps);
         } catch (InterruptedException e) { }
+    }
+
+    public void afficherRiviere(ArrayList<Card> riviere) {
+        this.afficher2(riviere.toString());
     }
 
 }
