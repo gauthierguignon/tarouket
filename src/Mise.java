@@ -1,7 +1,6 @@
 package src;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Mise {
@@ -58,8 +57,8 @@ public class Mise {
         return mise.toString();
     }
 
-    public List<Integer> getMise() {
-        return Collections.unmodifiableList(mise);
+    public ArrayList<Integer> getMise() {
+        return mise;
     }
 
     public int total() {

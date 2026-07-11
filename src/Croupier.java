@@ -51,6 +51,13 @@ public class Croupier extends Player {
 
     @Override
     public Choix demanderChoix(Vue vue, Tarouket tarouket) {
+
+        // s'éxécute seulement si le joueur à misé juste avant
+        if(this == tarouket.getNePeutPasSeCoucher()) {
+            vue.croupierParleRandom("Bon bas ... j'ai pas le choix. Je dois au moins égaliser ton pot.");
+            return Choix.BON_DEBARRAS;
+        }
+
         int alea = rand.nextInt(100); // de 0 à 99
         if (alea < 45) {
             vue.croupierParleRandom("Je checke !"); 
@@ -59,10 +66,6 @@ public class Croupier extends Player {
             vue.croupierParleRandom("Je vais de l'avant !");
             return Choix.AVANT;
         } else {
-            if(this == tarouket.getNePeutPasSeCoucher()) {
-                vue.croupierParleRandom("Bon bas ... j'ai pas le choix. Je dois au moins égaliser ton pot.");
-                return Choix.BON_DEBARRAS;
-            }
             vue.croupierParleRandom("Je me couche");
             return Choix.COUCHER;
         }
@@ -71,6 +74,7 @@ public class Croupier extends Player {
     private boolean chercherUneCarte(int objectif, List<Integer> cartes) {
         if(cartes.contains(objectif)) {
             this.ajouterAuPot(objectif);
+            Vue.afficherTEST(this.potToString());
             return true;
         }
         return false;
@@ -102,6 +106,7 @@ public class Croupier extends Player {
         if(carte1 != -1) {
             this.ajouterAuPot(cartes.get(carte1));
             this.ajouterAuPot(cartes.get(carte2));
+            Vue.afficherTEST(this.potToString());
             return true;
         }
         return false;
@@ -147,6 +152,7 @@ public class Croupier extends Player {
             return false;
         }
         this.ajouterAuPot(meilleureCombinaison);
+        Vue.afficherTEST(this.potToString());
         return true;
     }
 
@@ -154,7 +160,7 @@ public class Croupier extends Player {
     public Choix bonDebarras(Vue vue, Tarouket tarouket) {
 
         int objectif = tarouket.getPlayer().totalDuPot() - this.totalDuPot();
-        List<Integer> cartes = this.getMise().getMise();
+        ArrayList<Integer> cartes = this.getMise().getMise();
         Collections.sort(cartes);
 
         if(chercherUneCarte(objectif, cartes)) return Choix.AVANT;
@@ -194,6 +200,7 @@ public class Croupier extends Player {
         vue.afficher2("Croupier : Je mise " + valeur + " !");
         vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
         vue.afficher2(tarouket.getPlayer().toString());
+        tarouket.mettreAJourEnAvant();
     }
 
     @Override
@@ -207,18 +214,19 @@ public class Croupier extends Player {
         this.getMise().clear();
 
         vue.afficherPots(tarouket.getPlayer(), this);
+        tarouket.mettreAJourEnAvant();
     }
 
     @Override
-    public void seCoucher(Vue vue, Player croupier) {
+    public void seCoucher(Vue vue, Player p) {
         vue.croupierParleRandom("Pas besoin des prendre des risques",
         "Je joue intelligemment moi !",
         "Il faut de la sagesse pour abandonner une main."
         );
-        vue.afficher2("Croupier : J'avais en main " + Arrays.toString(croupier.getCartes()));
+        vue.afficher2("Croupier : J'avais en main " + Arrays.toString(this.getCartes()));
         vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
-        croupier.recupererPots(this);
+        p.recupererPots(this);
     }
 
 

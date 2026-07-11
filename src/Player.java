@@ -104,13 +104,13 @@ public class Player {
 
     public Choix demanderChoix(Vue vue, Tarouket tarouket) {
 
-        String question = "Croupier : Tu peux checker (1), aller de l'avant (2)";
+        String question = "Croupier : C'est un bon débarras ! Tu doi au moins égaliser le pot adverse ! Appuie sur entrée ↵";
         String choix;
 
         if(this == tarouket.getNePeutPasSeCoucher()) {
-            choix = vue.demanderChoix(question,"1", "2");
+            choix = vue.demanderChoix(question,"");
         } else {
-            question += " ou te coucher(3)";
+            question = "Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)";
             choix = vue.demanderChoix(question, "1", "2", "3");
         }
 
@@ -126,6 +126,9 @@ public class Player {
                 case "3" -> {
                     vue.afficher2("Vous : Je me couche !");
                     return Choix.COUCHER;
+                }
+                case "" -> {
+                    return Choix.BON_DEBARRAS;
                 }
             }
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
@@ -191,6 +194,7 @@ public class Player {
         this.ajouterAuPot(valeur);
         vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
         vue.afficher2(tarouket.getPlayer().toString());
+        tarouket.mettreAJourEnAvant();
     }
 
     public void faireTapis(Vue vue, Tarouket tarouket) {
@@ -204,12 +208,24 @@ public class Player {
 
         vue.afficherPots(this, tarouket.getCroupier());
         vue.afficher2(this.toString());
+        tarouket.mettreAJourEnAvant();
     }
 
     public Choix bonDebarras(Vue vue, Tarouket tarouket) {
         // le joueur peut être forcé de faire tapis
         // donc faut retourner le bon choix
-        return null;
+        if(this.totalDeMise() + totalDuPot() < tarouket.autreJoueur(this).totalDeMise()) {
+            return Choix.TAPIS;
+        }
+        do { 
+            int valeur = vue.demanderMise(tarouket.getPlayer().getMise().getMise());
+            vue.clearScreen();
+            vue.afficher2("Croupier : Tu as misé " + valeur + " !");
+            this.ajouterAuPot(valeur);
+            vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
+            vue.afficher2(tarouket.getPlayer().toString());
+        } while (this.totalDeMise() < tarouket.autreJoueur(this).totalDeMise());
+        return Choix.AVANT;
     }
 
 }

@@ -11,6 +11,18 @@ public class Vue {
         this.sc = new Scanner(System.in);
     }
 
+    public static void afficherTEST(String phrase) { 
+        for(int i = 0; i < phrase.length(); i++) {
+            System.out.print(phrase.charAt(i));
+            try {
+                Thread.sleep(30); //30
+            } catch (InterruptedException e) {}
+        }
+        System.out.print("\n");
+    }
+
+
+
     // Afichage dans le terminal '\n' x1
     public void afficher1(String phrase) { 
         for(int i = 0; i < phrase.length(); i++) {

@@ -72,6 +72,9 @@ public final class Tarouket {
     private void jouerUneMain() {
         distributionCartes();
         petiteBlinde();
+        enAvant = null;
+        nePeutPasSeCoucher = null;
+        toursConsecutifsEnAvant = 0;
 
         int[] phases = {PRE_FLOP, FLOP, TURN, RIVER};
 
@@ -95,7 +98,6 @@ public final class Tarouket {
                     return;
                 }
             }
-            mettreAJourEnAvant();
         }
         comparerDeuxMains();
         finDeMain();
@@ -111,11 +113,14 @@ public final class Tarouket {
         Choix choixSecond = jouerAction(second);
         if (choixSecond == Choix.COUCHER) return ResultatTour.ABANDON;
 
+        if(choixSecond == Choix.AVANT && premier == nePeutPasSeCoucher) {
+            choixPremier = premier.bonDebarras(vue, this);
+        }
+
         if (choixPremier == Choix.TAPIS || choixSecond == Choix.TAPIS) {
             return ResultatTour.QUICKSTOP;
         }
 
-        mettreAJourEnAvant();
         return ResultatTour.CONTINUE;
     }
 
@@ -156,7 +161,7 @@ public final class Tarouket {
         }
     }
 
-    private void mettreAJourEnAvant() {
+    public void mettreAJourEnAvant() {
         Player nouveauEnAvant;
 
         if (p1.totalDuPot() > croupier.totalDuPot()) {
@@ -165,19 +170,20 @@ public final class Tarouket {
             nouveauEnAvant = croupier;
         } else {
             nouveauEnAvant = null;
+            return;
         }
 
         if(nouveauEnAvant == enAvant) {
-            if(enAvant != null) {
-                toursConsecutifsEnAvant++;
-            }
+            toursConsecutifsEnAvant++;
         } else {
             enAvant = nouveauEnAvant;
-            toursConsecutifsEnAvant = (enAvant == null) ? 0 : 1;
+            toursConsecutifsEnAvant = 1;
         }
+
+        nePeutPasSeCoucher = (toursConsecutifsEnAvant == 2) ? autreJoueur(enAvant) : null;
     }
 
-    private Player autreJoueur(Player joueur) {
+    public Player autreJoueur(Player joueur) {
         return joueur == p1 ? croupier : p1;
     }
 
