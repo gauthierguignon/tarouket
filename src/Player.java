@@ -110,13 +110,12 @@ public class Player {
 
     public Choix demanderChoix(Vue vue, Tarouket tarouket) {
 
-        String question = "Croupier : C'est un bon débarras ! Tu doi au moins égaliser le pot adverse ! Appuie sur entrée ↵";
         String choix;
 
         if(this == tarouket.getpotentielleVictime()) {
-            choix = vue.demanderChoix(question,"");
+            return Choix.BON_DEBARRAS;
         } else {
-            question = "Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)";
+            String question = "Croupier : Tu peux checker (1), aller de l'avant (2) ou te coucher(3)";
             choix = vue.demanderChoix(question, "1", "2", "3");
         }
 
@@ -132,9 +131,6 @@ public class Player {
                 case "3" -> {
                     vue.afficher2("Vous : Je me couche !");
                     return Choix.COUCHER;
-                }
-                case "" -> {
-                    return Choix.BON_DEBARRAS;
                 }
             }
             throw new IllegalStateException("Choix impossible : " + choix); //ne sera jamais exécuté
@@ -220,17 +216,20 @@ public class Player {
     public Choix bonDebarras(Vue vue, Tarouket tarouket) {
         // le joueur peut être forcé de faire tapis
         // donc faut retourner le bon choix
+        
         if(this.totalDeMise() + totalDuPot() < tarouket.autreJoueur(this).totalDeMise()) {
+            vue.croupierParleRandom("C'est un bon débarras ! Tu n'as pas le choix, tu dois faire Tapis !");
             return Choix.TAPIS;
         }
-        do { 
+        do {
+            vue.croupierParleRandom("C'est un bon débarras ! Tu dois au moins égaliser le pot adverse !");
             int valeur = vue.demanderMise(tarouket.getPlayer().getMise().getMise());
             vue.clearScreen();
             vue.afficher2("Croupier : Tu as misé " + valeur + " !");
             this.ajouterAuPot(valeur);
             vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
             vue.afficher2(tarouket.getPlayer().toString());
-        } while (this.totalDeMise() < tarouket.autreJoueur(this).totalDeMise());
+        } while (this.totalDuPot() < tarouket.autreJoueur(this).totalDuPot());
         // le bon debarras est effectué
         // On remet les compteurs à zéro
         tarouket.initBonDebarras();

@@ -1,5 +1,7 @@
 # CLI Tarouket
 
+![Démonstration](assets/demo.gif)
+
 # Informations Techniques
 
 ## Compilation

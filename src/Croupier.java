@@ -55,7 +55,6 @@ public class Croupier extends Player {
         if(this == tarouket.getpotentielleVictime()) {
             return Choix.BON_DEBARRAS;
         }
-
         int alea = rand.nextInt(100); // de 0 à 99
         if (alea < 45) {
             vue.croupierParleRandom("Je checke !"); 

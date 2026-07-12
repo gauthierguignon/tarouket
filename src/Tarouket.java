@@ -75,7 +75,7 @@ public final class Tarouket {
                 peuplerRiviere(etat.getValeur());
                 vue.afficher("Révélation " + etat.getNom() + " : ");
                 vue.afficherRiviere(riviere);
-                vue.afficher(p1.toString());
+                // vue.afficher(p1.toString());
             }
             ResultatTour rez = jouerTourEncheres();
             switch (rez) {
