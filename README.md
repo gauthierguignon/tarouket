@@ -6,15 +6,17 @@
 
 ## Compilation
 
-~~bash
-javac -d bin -cp bin src/*.java
-~~
+`javac -d bin -cp bin src/*.java`
 
 ## Execution
 
-~~bash
-java -cp bin src.Main
-~~
+`java -cp bin src.Main`
+
+## Release
+
+Pour éviter de clone le projet : téléchargez le binaire dans la release.
+
+Exécution : `java -jar tarouket.jar`
 
 # Histoire
 
