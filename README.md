@@ -18,11 +18,9 @@ java -cp bin src.Main
 
 # Histoire
 
-Le Tarouket est un jeu d'argent à deux joueurs dérivé du poker, traditionnellement associé aux milieux maritimes. Je situe son apparition au milieu des années 90, en France, sur les côtes normandes.
+Le Tarouket est un jeu d'argent à deux joueurs dérivé du poker. Apparu en France, il est traditionnellement associé aux milieux maritimes.
 
-Présenté comme une adaptation du Texas Hold'em pour deux joueurs, le Tarouket se distingue par l'utilisation d'un jeu de tarot traditionnel. Les cartes d'atout remplissent la fonction habituellement dévolue aux jetons de mise. 
-
-Les règles spécifiques du "en avant" et du "bon débarras" lui confèrent une identité forte.
+Présenté comme une adaptation du Texas Hold'em pour deux joueurs, le Tarouket se distingue par l'utilisation d'un jeu de tarot traditionnel. Les cartes d'atout remplissent la fonction habituellement dévolue aux jetons de mise, tandis que les règles spécifiques du "en avant" et du "bon débarras" lui confèrent une identité propre.
 
 La popularité du jeu est généralement attribuée à la simplicité de ses règles, à la diversité des stratégies qu'il permet de développer ainsi qu'à son faible coût matériel. L'utilisation d'un jeu de tarot, largement répandu en France, a notamment contribué à sa diffusion auprès de publics ne disposant pas de matériel de poker spécialisé.
 
