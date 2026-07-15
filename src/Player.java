@@ -82,8 +82,13 @@ public class Player {
         this.pot.clear();
     }
 
+    @Override
     public String toString() {
-        return "Vous avez en main : " + cartes[0] + " " + cartes[1] + "\nVotre Mise : " + mise.toString(); 
+        return "Vous avez en main : " + this.mainToString() + "\nVotre mise : " + mise.toString();
+    }
+
+    public String mainToString() {
+        return Vue.conversionCartesCouleurs(new ArrayList<>(Arrays.asList(cartes)));
     }
 
     public void setCartes(Card c1, Card c2) {
@@ -121,15 +126,15 @@ public class Player {
 
             switch(choix) {
                 case "1" -> {
-                    vue.afficher2("Vous : Je checke !"); 
+                    vue.afficher("Vous : Je checke !", 2); 
                     return Choix.CHECK;
                 }
                 case "2" -> {
-                    vue.afficher2("Vous : Je vais de l'avant !");
+                    vue.afficher("Vous : Je vais de l'avant !", 2);
                         return Choix.AVANT;
                     }
                 case "3" -> {
-                    vue.afficher2("Vous : Je me couche !");
+                    vue.afficher("Vous : Je me couche !", 2);
                     return Choix.COUCHER;
                 }
             }
@@ -144,7 +149,7 @@ public class Player {
             "On se demande bien qui va gagner",
             "Chacun sa technique"
         );
-        vue.afficher2("Le croupier avait en main : " + Arrays.toString(croupier.getCartes()));
+        vue.afficher("Le croupier avait en main : " + Arrays.toString(croupier.getCartes()), 2);
         vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
         croupier.recupererPots(this);
@@ -172,18 +177,18 @@ public class Player {
                 choix = vue.demanderChoix(prompt, "oui", "non");
 
                 if (choix.equals("OUI")) {
-                    vue.afficher("\nVous : Je relance une " + counter + "e fois");
+                    vue.afficher("\nVous : Je relance une " + counter + "e fois", 1);
                     this.relancer(vue, tarouket);
                     counter ++;
                 } else {
-                    vue.afficher2("\nVous : Je m'arrête là.\n");
+                    vue.afficher("\nVous : Je m'arrête là.", 2);
                 }
             } while (!choix.equals("NON"));
         return Choix.AVANT;
     }
 
     public void relancer(Vue vue, Tarouket tarouket) {
-        vue.afficher1("\nVous : Je relance !");
+        vue.afficher("\nVous : Je relance !", 2);
         vue.croupierParleRandom("Tu penses m'effrayer ? C'est ce qu'on va voir !",
             "T'as une paire d'AS ? Mon oeil oui !",
             "AHAH ! Je m'y attendais à celle-là !",
@@ -192,10 +197,10 @@ public class Player {
         int valeur = vue.demanderMise(tarouket.getPlayer().getMise().getMise());
         // mettre dans le pot de p1 valeur
         vue.clearScreen();
-        vue.afficher2("Croupier : Tu as misé " + valeur + " !");
+        vue.afficher("Croupier : Tu as misé " + valeur + " !", 2);
         this.ajouterAuPot(valeur);
         vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
-        vue.afficher2(tarouket.getPlayer().toString());
+        vue.afficher(tarouket.getPlayer().toString(), 2);
         tarouket.mettreAJourEnAvant();
     }
 
@@ -209,7 +214,7 @@ public class Player {
         this.ajouterAuPotTouteLaMise(this.getMise().getMise());
 
         vue.afficherPots(this, tarouket.getCroupier());
-        vue.afficher2(this.toString());
+        vue.afficher(this.toString(), 1);
         tarouket.mettreAJourEnAvant();
     }
 
@@ -225,10 +230,10 @@ public class Player {
             vue.croupierParleRandom("C'est un bon débarras ! Tu dois au moins égaliser le pot adverse !");
             int valeur = vue.demanderMise(tarouket.getPlayer().getMise().getMise());
             vue.clearScreen();
-            vue.afficher2("Croupier : Tu as misé " + valeur + " !");
+            vue.afficher("Croupier : Tu as misé " + valeur + " !", 1);
             this.ajouterAuPot(valeur);
             vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
-            vue.afficher2(tarouket.getPlayer().toString());
+            vue.afficher(tarouket.getPlayer().toString(), 2);
         } while (this.totalDuPot() < tarouket.autreJoueur(this).totalDuPot());
         // le bon debarras est effectué
         // On remet les compteurs à zéro

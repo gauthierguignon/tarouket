@@ -590,7 +590,7 @@ public class EvaluateurMain {
             Deck deck = new Deck();
             deck.shuffle();
             // cartes rivière
-            for(int i = 0; i < 1; i++) {
+            for(int i = 0; i < 5; i++) {
                 riviere.add(deck.drawRandomCard());
             }
             // cartes p1
@@ -606,7 +606,7 @@ public class EvaluateurMain {
 
             joueur1 = new EvaluateurMain(mainJ1);
             joueur2 = new EvaluateurMain(mainJ2);
-        } while (!(joueur1.meilleureCombinaison() == Combinaison.PAIRE && joueur2.meilleureCombinaison() == Combinaison.PAIRE));
+        } while (!(joueur1.meilleureCombinaison() == Combinaison.BRELAN && joueur2.meilleureCombinaison() == Combinaison.FULL));
 
         // On retire la rivière des mains des joueurs pour l'affichage des mains
         ArrayList<Card> duoJ1 = new ArrayList<>(mainJ1);
@@ -618,14 +618,14 @@ public class EvaluateurMain {
 
         //Affichage
         System.out.println(counter + "\n");
-        System.out.println("Rivière : " + riviere + "\n");
+        System.out.println("Rivière : \t" + Vue.conversionCartesCouleurs(riviere));
         System.out.println("Main de J1 : " + duoJ1 + " " + joueur1.description(afficherHauteur) + "\n");
         System.out.println("Main de J2 : " + duoJ2 + " " + joueur2.description(afficherHauteur) + "\n");
 
         if(joueur1.score() > joueur2.score()) {
-            System.out.println("J1 GAGNE avec " + joueur1.meilleuresCartes(joueur1.meilleureCombinaison()));
+            System.out.println("J1 GAGNE avec " + Vue.conversionCartesCouleurs(joueur1.meilleuresCartes(joueur1.meilleureCombinaison())));
         } else {
-            System.out.println("J2 L'EMPORTE avec " + joueur2.meilleuresCartes(joueur2.meilleureCombinaison()));
+            System.out.println("J2 L'EMPORTE avec " + Vue.conversionCartesCouleurs(joueur2.meilleuresCartes(joueur2.meilleureCombinaison())));
         }
 
 

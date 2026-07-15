@@ -73,8 +73,8 @@ public final class Tarouket {
         for (Etats etat : Etats.values()) {
             if (etat.getValeur() > Etats.PRE_FLOP.getValeur()) {
                 peuplerRiviere(etat.getValeur());
-                vue.afficher("Révélation " + etat.getNom() + " : ");
-                vue.afficherRiviere(riviere);
+                vue.afficher("Révélation " + etat.getNom() + " : ", 0);
+                vue.afficher(Vue.conversionCartesCouleurs(riviere), 2);
                 // vue.afficher(p1.toString());
             }
             ResultatTour rez = jouerTourEncheres();
@@ -187,18 +187,18 @@ public final class Tarouket {
         String choix = vue.demanderChoix("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ", "PILE", "FACE");
         String coin = Croupier.coinToss();
         if(coin.equals(choix)) {
-            vue.afficher1("\nCroupier : Gagné ! Tu auras le petit bout");
-            vue.afficher2("Croupier : Mais cette fois, c'est moi qui commence ! ");
+            vue.afficher("\nCroupier : Gagné ! Tu auras le petit bout", 0);
+            vue.afficher("Croupier : Mais cette fois, c'est moi qui commence ! ", 2);
             return true;
         } else {
-            vue.afficher1("\nCroupier : Perdu ! C'est moi qui aurai le petit bout");
-            vue.afficher2("Croupier : Mais c'est toi qui commence ! ");
+            vue.afficher("\nCroupier : Perdu ! C'est moi qui aurai le petit bout", 0);
+            vue.afficher("Croupier : Mais c'est toi qui commence ! ", 2);
             return false;
         }
     }
     // distribution de 2 cartes à p1 et croupier
     private void distributionCartes() {
-        vue.afficher("Croupier : Tarouket !\n\n");
+        vue.afficher("Croupier : Tarouket !", 2);
         p1.setCartes(deck.drawRandomCard(), deck.drawRandomCard());
         croupier.setCartes(deck.drawRandomCard(), deck.drawRandomCard());
     }
@@ -207,11 +207,12 @@ public final class Tarouket {
         if ((p1.totalDeMise() == 0 && p1.totalDuPot() == 0) || (croupier.totalDeMise() == 0 && croupier.totalDuPot() == 0)) return true;
         return false;
     }
+
     // Mise automatique de la petite Blinde
     private void petiteBlinde() {
         // affichage des mises avant la petite blind
-        vue.afficher2("Mise du Croupier : " + croupier.getMise());
-        vue.afficher2(p1.toString());
+        vue.afficher("Mise du Croupier : " + croupier.getMise(), 2);
+        vue.afficher(p1.toString(), 2);
         vue.exigerOui("Croupier : Vous devez miser la petite blinde. Tu veux miser oui ou non ? ");
         vue.clearScreen();
         // ils effectuent la petite blind
@@ -220,7 +221,7 @@ public final class Tarouket {
         // on affiche le pot des joueurs
         vue.afficherPots(p1, croupier);
         // on affiche la main et le pot de p1
-        vue.afficher2(p1.toString());
+        vue.afficher(p1.toString(), 2);
     }
 
     private void finDeMain() {
@@ -235,14 +236,14 @@ public final class Tarouket {
         // On retire les cartes de la rivière
         this.riviere.clear();
 
-        vue.afficher("Croupier : C'est la fin du tour ! ");
+        vue.afficher("Croupier : C'est la fin du tour ! ", 0);
         if(!finDePartie()) {
-            vue.afficher1("Je redistribue les cartes.");
+            vue.afficher("Je redistribue les cartes.", 0);
         }
         vue.exigerOui("Tu es prêt ? (oui)");
         vue.clearScreen();
         if(!finDePartie()) {
-            vue.afficher2("Croupier : Nouvelle manche ! ");
+            vue.afficher("Croupier : Nouvelle manche ! ", 2);
         }
     }
 
@@ -258,7 +259,7 @@ public final class Tarouket {
                 "Pas sûr que t'entrainer suffise à me battre... "
             );
         } else {
-            vue.afficher2("Croupier : Tu as gagné !");
+            vue.afficher("Croupier : Tu as gagné !", 2);
             vue.croupierParleRandom("Un coup de chance certainement ...", 
                 "Tu m'autorises une revanche ?",
                 "Espèce de trognon de pomme oxydé ! Tu t'en tireras pas si facilement !",
@@ -266,7 +267,7 @@ public final class Tarouket {
             );
         }
 
-        vue.afficher2("A la prochaine, pour une partie de Tarouket !");
+        vue.afficher("A la prochaine, pour une partie de Tarouket !", 2);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
@@ -296,15 +297,15 @@ public final class Tarouket {
 
         boolean afficherHauteur = evalP1.meilleureCombinaison() == evalCroupier.meilleureCombinaison();
 
-        vue.afficher2("Rivière : \t" + this.riviere);
-        vue.afficher2("Votre main : \t" + Arrays.toString(p1.getCartes()) + " " + evalP1.description(afficherHauteur));
-        vue.afficher2("Main du Croupier : \t" +  Arrays.toString(croupier.getCartes()) + " " + evalCroupier.description(afficherHauteur));
+        vue.afficher("Rivière : \t" + Vue.conversionCartesCouleurs(riviere), 2);
+        vue.afficher("Votre main : \t" + p1.mainToString() + " " + evalP1.description(afficherHauteur), 2);
+        vue.afficher("Main du Croupier : \t" +  croupier.mainToString() + " " + evalCroupier.description(afficherHauteur), 2);
 
         if(evalP1.score() > evalCroupier.score()) {
-            vue.afficher2("Tu GAGNES avec " + evalP1.meilleuresCartes(evalP1.meilleureCombinaison()));
+            vue.afficher("Tu GAGNES avec " + Vue.conversionCartesCouleurs(evalP1.meilleuresCartes(evalP1.meilleureCombinaison())),2);
             p1.recupererPots(croupier);
         } else {
-            vue.afficher2("Je L'EMPORTE avec " + evalCroupier.meilleuresCartes(evalCroupier.meilleureCombinaison()));
+            vue.afficher("Je L'EMPORTE avec " + evalCroupier.meilleuresCartes(evalCroupier.meilleureCombinaison()),2);
             croupier.recupererPots(p1);
         }
     }

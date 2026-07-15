@@ -37,7 +37,7 @@ public class Croupier extends Player {
     }
 
     public String toString() {
-        return "Le Croupier avait en main : " + this.getCartes()[0] + " " + this.getCartes()[1] + "\nMise du Croupier : " + this.getMise().toString(); 
+        return "Le Croupier avait en main : " + this.mainToString() + "\nMise du Croupier : " + this.getMise().toString(); 
     }
 
     @Override
@@ -164,20 +164,20 @@ public class Croupier extends Player {
         Collections.sort(cartes);
 
         if(chercherUneCarte(objectif, cartes)) {
-            vue.afficher1(this.potToString());
-            vue.afficher2("Total : " + this.totalDuPot());
+            vue.afficher(this.potToString(), 1);
+            vue.afficher("Total : " + this.totalDuPot(), 2);
             tarouket.initBonDebarras();
             return Choix.AVANT;
         }
         if(chercherDeuxCartes(objectif, cartes)) {
-            vue.afficher1(this.potToString());
-            vue.afficher2("Total : " + this.totalDuPot());
+            vue.afficher(this.potToString(), 1);
+            vue.afficher("Total : " + this.totalDuPot(), 2);
             tarouket.initBonDebarras();
             return Choix.AVANT;
         }
         if(chercherCombinaison(objectif, cartes)) {
-            vue.afficher1(this.potToString());
-            vue.afficher2("Total : " + this.totalDuPot());
+            vue.afficher(this.potToString(), 1);
+            vue.afficher("Total : " + this.totalDuPot(), 2);
             tarouket.initBonDebarras();
             return Choix.AVANT;
         }
@@ -212,9 +212,9 @@ public class Croupier extends Player {
         this.ajouterAuPot(valeur);
         // affichage
         vue.clearScreen();
-        vue.afficher2("Croupier : Je mise " + valeur + " !");
+        vue.afficher("Croupier : Je mise " + valeur + " !", 2);
         vue.afficherPots(tarouket.getPlayer(), tarouket.getCroupier());
-        vue.afficher2(tarouket.getPlayer().toString());
+        vue.afficher(tarouket.getPlayer().toString(), 2);
         tarouket.mettreAJourEnAvant();
     }
 
@@ -238,7 +238,7 @@ public class Croupier extends Player {
         "Je joue intelligemment moi !",
         "Il faut de la sagesse pour abandonner une main."
         );
-        vue.afficher2("Croupier : J'avais en main " + Arrays.toString(this.getCartes()));
+        vue.afficher("Croupier : J'avais en main " + Arrays.toString(this.getCartes()), 2);
         vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
         p.recupererPots(this);

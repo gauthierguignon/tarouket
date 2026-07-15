@@ -32,7 +32,7 @@ public class Card implements Comparable<Card>{
     }
 
     public String toString() {
-        return face.toString() + "-" + color.toString();
+        return face.toString() + color.toString();
     }
 
         @Override
