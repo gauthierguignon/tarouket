@@ -305,7 +305,7 @@ public final class Tarouket {
             vue.afficher("Tu GAGNES avec " + Vue.conversionCartesCouleurs(evalP1.meilleuresCartes(evalP1.meilleureCombinaison())),2);
             p1.recupererPots(croupier);
         } else {
-            vue.afficher("Je L'EMPORTE avec " + evalCroupier.meilleuresCartes(evalCroupier.meilleureCombinaison()),2);
+            vue.afficher("Je L'EMPORTE avec " + Vue.conversionCartesCouleurs(evalCroupier.meilleuresCartes(evalCroupier.meilleureCombinaison())),2);
             croupier.recupererPots(p1);
         }
     }
