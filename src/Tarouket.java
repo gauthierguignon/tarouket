@@ -2,8 +2,6 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
 
 public final class Tarouket {
 
@@ -12,11 +10,8 @@ public final class Tarouket {
     private final Croupier croupier;
     private final Deck deck;
     private final ArrayList<Card> riviere;
-    private final Random rand;
     private Player joueurEnCours;
-    private Player enAvant;
-    private int toursConsecutifsEnAvant;
-    private Player potentielleVictime; // peut subir un bon débarras
+    private final GestionPot gestionPot;
 
     // Note pour plus tard : 
     // Avoir Croupier extends Player n'était pas une mauvaise idée
@@ -28,7 +23,6 @@ public final class Tarouket {
     public Tarouket() {
 
         vue = new Vue();
-        rand = new Random();
         boolean bool = this.pileOuFace();
         if (!bool) {
             p1 = new Player(true);
@@ -46,6 +40,10 @@ public final class Tarouket {
 
         // Création de la rivière
         riviere = new ArrayList<>();
+
+        // Création de la gesiton du Bon débarras
+        gestionPot = new GestionPot();
+
     }
 
     public void run() {
@@ -62,7 +60,7 @@ public final class Tarouket {
     }
 
     public Player getpotentielleVictime() {
-        return this.potentielleVictime;
+        return gestionPot.getPotentielleVictime();
     }
 
     private void jouerUneMain() {
@@ -107,7 +105,7 @@ public final class Tarouket {
         Choix choixSecond = jouerAction(second);
         if (choixSecond == Choix.COUCHER) return ResultatTour.ABANDON;
 
-        if(second.totalDuPot()>premier.totalDuPot() && premier == potentielleVictime) {
+        if(second.totalDuPot()>premier.totalDuPot() && premier == gestionPot.getPotentielleVictime()) {
             choixPremier = premier.bonDebarras(vue, this);
         }
 
@@ -157,26 +155,7 @@ public final class Tarouket {
     }
 
     public void mettreAJourEnAvant() {
-        Player nouveauEnAvant;
-
-        if (p1.totalDuPot() > croupier.totalDuPot()) {
-            nouveauEnAvant = p1;
-        } else if (p1.totalDuPot() < croupier.totalDuPot()) {
-            nouveauEnAvant = croupier;
-        } else {
-            nouveauEnAvant = null;
-            toursConsecutifsEnAvant = 0;
-            return;
-        }
-
-        if(nouveauEnAvant == enAvant) {
-            toursConsecutifsEnAvant++;
-        } else {
-            enAvant = nouveauEnAvant;
-            toursConsecutifsEnAvant = 1;
-        }
-
-        potentielleVictime = (toursConsecutifsEnAvant >= 2) ? autreJoueur(enAvant) : null;
+        gestionPot.mettreAJourEnAvant(p1, croupier);
     }
 
     public Player autreJoueur(Player joueur) {
@@ -238,7 +217,7 @@ public final class Tarouket {
 
         vue.afficher("Croupier : C'est la fin du tour ! ", 0);
         if(!finDePartie()) {
-            vue.afficher("Je redistribue les cartes.", 0);
+            vue.afficher("Je redistribue les cartes. ", 0);
         }
         vue.exigerOui("Tu es prêt ? (oui)");
         vue.clearScreen();
@@ -325,20 +304,18 @@ public final class Tarouket {
     }
 
     public void initBonDebarras() {
-        enAvant = null;
-        potentielleVictime = null;
-        toursConsecutifsEnAvant = 0;
+        gestionPot.reinitialiser();
     }
 
-    private void testSystem(Player p) {
-        // a utiliser dans jouerTourEncheres()
-        System.out.println("" + p.getNom()  + " A pris sa décision");
-        System.out.print("Joueur en Avant : ");
-        System.out.println(enAvant == null ? "null" : Objects.toString(enAvant.getNom(), "null"));
-        System.out.println("Tours consécutifs en avant : " + toursConsecutifsEnAvant);
-        System.out.print("La victime potentielle est : ");
-        System.out.println(potentielleVictime == null ? "null" : Objects.toString(potentielleVictime.getNom(), "null"));
-    }
+    // private void testSystem(Player p) {
+    //     // a utiliser dans jouerTourEncheres()
+    //     System.out.println("" + p.getNom()  + " A pris sa décision");
+    //     System.out.print("Joueur en Avant : ");
+    //     System.out.println(enAvant == null ? "null" : Objects.toString(enAvant.getNom(), "null"));
+    //     System.out.println("Tours consécutifs en avant : " + toursConsecutifsEnAvant);
+    //     System.out.print("La victime potentielle est : ");
+    //     System.out.println(potentielleVictime == null ? "null" : Objects.toString(potentielleVictime.getNom(), "null"));
+    // }
 
     // test
     // Pour lancer ce test il faut désactiver l'afficahe du vue 
