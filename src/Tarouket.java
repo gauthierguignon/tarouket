@@ -187,7 +187,7 @@ public final class Tarouket {
         String choix = vue.demanderChoix("Croupier : Hello Moussaillon ! Tu dis Pile ou Face ? ", "PILE", "FACE");
         String coin = Croupier.coinToss();
         if(coin.equals(choix)) {
-            vue.afficher("\nCroupier : Gagné ! Tu auras le petit bout", 0);
+            vue.afficher("\nCroupier : Gagné ! Tu auras le petit bout", 1);
             vue.afficher("Croupier : Mais cette fois, c'est moi qui commence ! ", 2);
             return true;
         } else {

@@ -45,7 +45,7 @@ public class Vue {
                     i++;
                 }
             }
-        for(int counter = 0; counter < n; counter++) {
+        for(int counter = 1; counter <= n; counter++) {
             System.out.println("");
         }
     }

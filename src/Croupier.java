@@ -238,7 +238,7 @@ public class Croupier extends Player {
         "Je joue intelligemment moi !",
         "Il faut de la sagesse pour abandonner une main."
         );
-        vue.afficher("Croupier : J'avais en main " + Arrays.toString(this.getCartes()), 2);
+        vue.afficher("Croupier : J'avais en main " + Vue.conversionCartesCouleurs(new ArrayList<>(Arrays.asList(this.getCartes()))), 2);
         vue.exigerOui("On passe à la suite ? (oui)");
         vue.clearScreen();
         p.recupererPots(this);
